@@ -67,8 +67,8 @@ export default function Sidebar({ mobileOpen, onClose }) {
       <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
         {/* Logo */}
         <div className="sidebar-logo">
-          <div className="sidebar-logo-icon">
-            <BookOpen size={22} color="white" />
+          <div className="sidebar-logo-icon" style={{ background: 'transparent' }}>
+            <img src="/logo.png" alt="Logo" style={{ width: 28, height: 28, objectFit: 'contain' }} />
           </div>
           <div className="sidebar-logo-text">
             <div className="sidebar-logo-title">Hội Sinh Viên</div>

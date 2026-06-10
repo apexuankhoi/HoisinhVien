@@ -133,8 +133,8 @@ Bạn muốn hỏi gì hôm nay?`,
   };
 
   return (
-    <div className="page-container" style={{ height: 'calc(100vh - 64px - 48px)', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ display: 'flex', gap: 20, height: '100%' }}>
+    <div className="page-container" style={{ height: 'calc(100dvh - 100px)', display: 'flex', flexDirection: 'column', padding: '12px' }}>
+      <div style={{ display: 'flex', gap: 16, height: '100%' }}>
         {/* Sidebar gợi ý */}
         <div className="hide-mobile" style={{ width: 240, flexShrink: 0 }}>
           <div className="card" style={{ height: '100%', overflow: 'auto' }}>
@@ -258,9 +258,9 @@ Bạn muốn hỏi gì hôm nay?`,
 
           {/* Input */}
           <div style={{
-            padding: '16px 20px',
+            padding: '12px 14px',
             borderTop: '1px solid var(--gray-200)',
-            display: 'flex', gap: 10
+            display: 'flex', gap: 8, background: 'white'
           }}>
             <textarea
               ref={inputRef}
@@ -287,7 +287,7 @@ Bạn muốn hỏi gì hôm nay?`,
               onClick={() => sendMessage()}
               className="btn btn-primary"
               disabled={loading || !input.trim()}
-              style={{ borderRadius: 12, padding: '0 16px', flexShrink: 0 }}
+              style={{ borderRadius: 12, padding: '0 14px', flexShrink: 0 }}
             >
               <Send size={18} />
             </button>

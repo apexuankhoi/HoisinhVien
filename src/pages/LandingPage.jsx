@@ -66,11 +66,11 @@ export default function LandingPage() {
           <div className="card animate-slide-up" style={{ padding: 36 }}>
             <div style={{ textAlign: 'center', marginBottom: 28 }}>
               <div style={{
-                width: 56, height: 56, background: 'var(--gradient-primary)',
+                width: 64, height: 64, background: 'transparent',
                 borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                margin: '0 auto 12px', boxShadow: 'var(--shadow-glow)'
+                margin: '0 auto 12px'
               }}>
-                <BookOpen size={26} color="white" />
+                <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               </div>
               <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--gray-900)', marginBottom: 4 }}>
                 Chào mừng trở lại!
@@ -285,10 +285,10 @@ export default function LandingPage() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{
-            width: 36, height: 36, background: 'var(--gradient-primary)',
+            width: 36, height: 36, background: 'transparent',
             borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center'
           }}>
-            <BookOpen size={18} color="white" />
+            <img src="/logo.png" alt="Logo" style={{ width: 36, height: 36, objectFit: 'contain' }} />
           </div>
           <span style={{ color: 'white', fontWeight: 800, fontSize: 16 }}>Hội Sinh Viên</span>
         </div>

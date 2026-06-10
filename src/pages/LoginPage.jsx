@@ -47,7 +47,7 @@ export default function LoginPage() {
 
         <div className="auth-brand-content">
           <div className="auth-brand-logo">
-            <div className="auth-logo-icon"><BookOpen size={28} color="white" /></div>
+            <div className="auth-logo-icon" style={{ background: 'transparent' }}><img src="/logo.png" alt="Logo" style={{ width: 36, height: 36, objectFit: 'contain' }} /></div>
             <div>
               <div className="auth-logo-name">Hội Sinh Viên</div>
               <div className="auth-logo-sub"></div>
@@ -91,7 +91,7 @@ export default function LoginPage() {
           {/* Mobile: Top Bar */}
           <div className="auth-mobile-logo">
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div className="auth-logo-icon"><BookOpen size={20} color="white" /></div>
+              <div className="auth-logo-icon" style={{ background: 'transparent' }}><img src="/logo.png" alt="Logo" style={{ width: 24, height: 24, objectFit: 'contain' }} /></div>
               <div className="auth-logo-name">Hội Sinh Viên</div>
             </div>
           </div>

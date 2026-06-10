@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import api from '../lib/api';
 import toast from 'react-hot-toast';
 import { Eye, EyeOff, BookOpen, ArrowRight, Loader2, CheckCircle } from 'lucide-react';
 
@@ -19,8 +20,50 @@ export default function RegisterPage() {
   const [form, setForm] = useState({
     full_name: '', email: '', password: '', confirm_password: '',
     student_id: '', phone: '', gender: '', date_of_birth: '',
-    academic_year: '', class_name: '',
+    academic_year: '', class_name: '', cccd: '', hometown: '', address: ''
   });
+  const [kycLoading, setKycLoading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const handleKycUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setKycLoading(true);
+    const formData = new FormData();
+    formData.append('cccd', file);
+
+    const tid = toast.loading('🔍 Đang nhờ AI đọc CCCD của bạn...');
+    try {
+      const res = await api.post('/auth/ekyc', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      const data = res.data;
+      
+      let dob = form.date_of_birth;
+      if (data.dateOfBirth) {
+        // Chuyển DD/MM/YYYY sang YYYY-MM-DD
+        const parts = data.dateOfBirth.split('/');
+        if (parts.length === 3) dob = `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+
+      setForm(p => ({
+        ...p,
+        full_name: data.fullName || p.full_name,
+        cccd: data.cccd || p.cccd,
+        date_of_birth: dob,
+        gender: data.gender === 'Nam' ? 'male' : data.gender === 'Nữ' ? 'female' : p.gender,
+        hometown: data.hometown || p.hometown,
+        address: data.address || p.address
+      }));
+      toast.success('✨ AI đã điền tự động dữ liệu thành công!', { id: tid });
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'AI không đọc được CCCD này. Xin thử lại.', { id: tid });
+    } finally {
+      setKycLoading(false);
+      e.target.value = '';
+    }
+  };
 
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
 
@@ -72,7 +115,7 @@ export default function RegisterPage() {
 
         <div className="auth-brand-content">
           <div className="auth-brand-logo">
-            <div className="auth-logo-icon"><BookOpen size={28} color="white" /></div>
+            <div className="auth-logo-icon" style={{ background: 'transparent' }}><img src="/logo.png" alt="Logo" style={{ width: 36, height: 36, objectFit: 'contain' }} /></div>
             <div>
               <div className="auth-logo-name">Hội Sinh Viên</div>
               <div className="auth-logo-sub"></div>
@@ -109,7 +152,7 @@ export default function RegisterPage() {
           {/* Mobile: Top Bar */}
           <div className="auth-mobile-logo">
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div className="auth-logo-icon"><BookOpen size={20} color="white" /></div>
+              <div className="auth-logo-icon" style={{ background: 'transparent' }}><img src="/logo.png" alt="Logo" style={{ width: 24, height: 24, objectFit: 'contain' }} /></div>
               <div className="auth-logo-name">Hội Sinh Viên</div>
             </div>
           </div>
@@ -146,6 +189,30 @@ export default function RegisterPage() {
               {/* ── Step 0 ── */}
               {step === 0 && (
                 <>
+                  {/* Nút eKYC */}
+                  <div style={{ marginBottom: 20 }}>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      capture="environment" 
+                      ref={fileInputRef} 
+                      style={{ display: 'none' }} 
+                      onChange={handleKycUpload} 
+                    />
+                    <button 
+                      type="button" 
+                      className="btn btn-primary btn-full" 
+                      style={{ background: 'var(--gradient-accent)', border: 'none', gap: 8, height: 48 }}
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={kycLoading}
+                    >
+                      {kycLoading ? '⏳ Đang phân tích...' : '📸 Quét mặt trước CCCD để điền tự động'}
+                    </button>
+                    <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--gray-500)', marginTop: 8 }}>
+                      Chỉ với 1 chạm, AI sẽ tự động lấy thông tin từ CCCD
+                    </div>
+                  </div>
+                  
                   <div className="auth-field">
                     <label className="auth-label">Họ và tên <span className="auth-req">*</span></label>
                     <div className="auth-input-wrap">
@@ -247,6 +314,33 @@ export default function RegisterPage() {
                         <input type="date" className="auth-input"
                           value={form.date_of_birth} onChange={e => set('date_of_birth', e.target.value)} />
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="auth-field">
+                    <label className="auth-label">Số Căn cước công dân</label>
+                    <div className="auth-input-wrap">
+                      <span className="auth-input-icon">🪪</span>
+                      <input type="text" className="auth-input" placeholder="012345678912"
+                        value={form.cccd} onChange={e => set('cccd', e.target.value)} />
+                    </div>
+                  </div>
+
+                  <div className="auth-field">
+                    <label className="auth-label">Quê quán</label>
+                    <div className="auth-input-wrap">
+                      <span className="auth-input-icon">🏡</span>
+                      <input type="text" className="auth-input" placeholder="VD: Buôn Ma Thuột, Đắk Lắk"
+                        value={form.hometown} onChange={e => set('hometown', e.target.value)} />
+                    </div>
+                  </div>
+
+                  <div className="auth-field">
+                    <label className="auth-label">Nơi thường trú</label>
+                    <div className="auth-input-wrap">
+                      <span className="auth-input-icon">📍</span>
+                      <input type="text" className="auth-input" placeholder="VD: 123 Lê Duẩn, Tân Thành"
+                        value={form.address} onChange={e => set('address', e.target.value)} />
                     </div>
                   </div>
 

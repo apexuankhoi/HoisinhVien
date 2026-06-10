@@ -363,7 +363,17 @@ export default function EvidencesPage() {
                   </span>
                 </div>
 
-                {ev.ocr_text && (
+                {ev.ai_status === 'invalid' && ev.ai_notes && (
+                  <div style={{
+                    background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8,
+                    padding: '8px 10px', fontSize: 11, color: '#dc2626',
+                    marginBottom: 10, lineHeight: 1.5
+                  }}>
+                    <b>Lý do từ chối:</b> {ev.ai_notes}
+                  </div>
+                )}
+
+                {ev.ocr_text && ev.ai_status !== 'invalid' && (
                   <div style={{
                     background: 'var(--gray-50)', borderRadius: 8,
                     padding: '6px 10px', fontSize: 11, color: 'var(--gray-600)',
@@ -430,8 +440,15 @@ export default function EvidencesPage() {
               </div>
             </div>
 
+            {selectedEvidence.ai_status === 'invalid' && selectedEvidence.ai_notes && (
+              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: 16, marginBottom: 16 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: '#dc2626', marginBottom: 4 }}>❌ Lý do bị từ chối</p>
+                <p style={{ fontSize: 13, color: '#dc2626', lineHeight: 1.6 }}>{selectedEvidence.ai_notes}</p>
+              </div>
+            )}
+
             {/* OCR Result */}
-            {selectedEvidence.ocr_text && (
+            {selectedEvidence.ocr_text && selectedEvidence.ai_status !== 'invalid' && (
               <div style={{ background: '#f0f9ff', borderRadius: 10, padding: 16, marginBottom: 16 }}>
                 <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--primary-light)', marginBottom: 8 }}>
                   🤖 Kết quả AI OCR (Độ chính xác: {Math.round((selectedEvidence.ocr_confidence || 0) * 100)}%)
