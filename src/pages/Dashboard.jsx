@@ -239,9 +239,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid" style={{ gridTemplateColumns: '1fr 1fr 1fr', gap: 20, marginBottom: 24 }}>
+      <div className="dashboard-grid">
         {/* Radar + Overall */}
-        <div className="card" style={{ gridColumn: '1', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-700)', marginBottom: 8 }}>
             Biểu đồ 5 Tiêu chí
           </div>
@@ -258,7 +258,7 @@ export default function Dashboard() {
         </div>
 
         {/* Criteria Progress */}
-        <div className="card" style={{ gridColumn: '2 / 4' }}>
+        <div className="card">
           <div className="section-title" style={{ marginBottom: 16 }}>Tiến độ từng tiêu chí</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {CRITERIA.map((cat, i) => {

@@ -179,6 +179,19 @@ h6 {
   }
 }
 
+/* Dashboard Grid cho Mobile */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ─── Buttons ───────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
