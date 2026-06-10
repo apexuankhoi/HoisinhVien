@@ -4,15 +4,15 @@
 
 :root {
   /* Brand Colors */
-  --primary: #3b82f6;
-  --primary-light: #60a5fa;
-  --primary-dark: #2563eb;
+  --primary: #1e40af;
+  --primary-light: #3b82f6;
+  --primary-dark: #1e3a8a;
   --accent: #f59e0b;
   --accent-light: #fbbf24;
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
-  --info: #0ea5e9;
+  --info: #06b6d4;
 
   /* Neutral */
   --white: #ffffff;
@@ -28,16 +28,16 @@
   --gray-900: #0f172a;
 
   /* 5 Tốt Colors */
-  --dao-duc: #3b82f6;
+  --dao-duc: #6366f1;
   --hoc-tap: #10b981;
   --the-luc: #f59e0b;
   --tinh-nguyen: #ef4444;
   --hoi-nhap: #8b5cf6;
 
-  /* Gradients (Đã dọn dẹp nhẹ nhàng hơn) */
-  --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
-  --gradient-hero: #ffffff;
-  --gradient-card: #ffffff;
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%);
+  --gradient-hero: linear-gradient(135deg, #0f172a 0%, #1e3a8a 40%, #1e40af 70%, #3b82f6 100%);
+  --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
   --gradient-accent: linear-gradient(135deg, #f59e0b, #fbbf24);
 
   /* Shadows */
@@ -246,10 +246,11 @@ h1, h2, h3, h4, h5, h6 {
 .card:hover { box-shadow: var(--shadow-md); }
 
 .card-glass {
-  background: white;
-  border: 1px solid var(--gray-200);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
 }
 
 /* ─── Forms ─────────────────────────────────────────────────── */
@@ -2060,5 +2061,3 @@ tbody tr:hover { background: var(--gray-50); }
   .auth-step-dot:not(:last-child)::after { width: 36px; }
 }
 
-.text-muted { color: var(--gray-500); 
-.text-muted { color: var(--gray-500); } .text-primary { color: var(--primary); } .font-bold { font-weight: 700; } .font-semibold { font-weight: 600; }
