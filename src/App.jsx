@@ -8,6 +8,7 @@ import Topbar from './components/Topbar';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Dashboard from './pages/Dashboard';
+import ProfilePage from './pages/ProfilePage';
 import ChatPage from './pages/ChatPage';
 import EvidencesPage from './pages/EvidencesPage';
 import ActivitiesPage from './pages/ActivitiesPage';
@@ -35,7 +36,7 @@ function AppContent() {
           🎓
         </div>
         <div className="spinner" style={{ borderTopColor: 'white', borderColor: 'rgba(255,255,255,0.3)' }} />
-        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>Đang tải SV5T Đắk Lắk...</p>
+        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>Đang tải Hội Sinh Viên...</p>
       </div>
     );
   }
@@ -58,7 +59,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Dashboard />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/application" element={<ApplicationPage />} />
           <Route path="/evidences" element={<EvidencesPage />} />
           <Route path="/activities" element={<ActivitiesPage />} />
