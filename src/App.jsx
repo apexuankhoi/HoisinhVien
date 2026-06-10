@@ -11,7 +11,7 @@ import Dashboard from './pages/Dashboard';
 import ChatPage from './pages/ChatPage';
 import EvidencesPage from './pages/EvidencesPage';
 import ActivitiesPage from './pages/ActivitiesPage';
-import ApplicationPage from './pages/ApplicationPage';
+import ProfilePage from './pages/ProfilePage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import './index.css';
 
@@ -58,8 +58,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Dashboard />} />
-          <Route path="/application" element={<ApplicationPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/evidences" element={<EvidencesPage />} />
           <Route path="/activities" element={<ActivitiesPage />} />
           <Route path="/activities/:id" element={<ActivitiesPage />} />
