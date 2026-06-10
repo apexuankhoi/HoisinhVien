@@ -15,7 +15,8 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(form.email, form.password);
+      const cleanEmail = form.email.trim().toLowerCase();
+      await login(cleanEmail, form.password);
       navigate('/dashboard');
       toast.success('Đăng nhập thành công!');
     } catch (err) {

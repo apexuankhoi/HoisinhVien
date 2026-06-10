@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 
 const pageTitles = {
   '/dashboard': 'Dashboard',
-  '/profile': 'Tiến độ 5 tốt',
+  '/profile': 'Hồ sơ cá nhân',
   '/application': 'Hồ sơ của tôi',
   '/evidences': 'Minh chứng',
   '/activities': 'Hoạt động',

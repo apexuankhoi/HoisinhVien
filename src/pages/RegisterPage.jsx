@@ -41,13 +41,15 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (step < 2) { nextStep(); return; }
+    const payload = { ...form, email: form.email.trim().toLowerCase() };
     setLoading(true);
+    const toastId = toast.loading('Đang xử lý đăng ký...');
     try {
-      await register(form);
+      await register(payload);
       navigate('/dashboard');
-      toast.success('Đăng ký thành công! Chào mừng bạn! 🎉');
+      toast.success('Đăng ký thành công! Chào mừng bạn! 🎉', { id: toastId });
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Đăng ký thất bại');
+      toast.error(err.response?.data?.error || 'Đăng ký thất bại', { id: toastId });
     } finally {
       setLoading(false);
     }
