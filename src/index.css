@@ -2060,5 +2060,5 @@ tbody tr:hover { background: var(--gray-50); }
   .auth-step-dot:not(:last-child)::after { width: 36px; }
 }
 
-. t e x t - m u t e d   {   c o l o r :   v a r ( - - g r a y - 5 0 0 ) ;   }   . t e x t - p r i m a r y   {   c o l o r :   v a r ( - - p r i m a r y ) ;   }   . f o n t - b o l d   {   f o n t - w e i g h t :   7 0 0 ;   }   . f o n t - s e m i b o l d   {   f o n t - w e i g h t :   6 0 0 ;   }  
- 
+.text-muted { color: var(--gray-500); 
+.text-muted { color: var(--gray-500); } .text-primary { color: var(--primary); } .font-bold { font-weight: 700; } .font-semibold { font-weight: 600; }
