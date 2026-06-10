@@ -23,13 +23,13 @@ export default function Topbar({ onMenuClick }) {
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const title = pageTitles[location.pathname] || 'SV5T Đắk Lắk';
+  const title = pageTitles[location.pathname] || 'Hội Sinh Viên';
 
   useEffect(() => {
     if (user) {
       api.get('/notifications?unread_only=true')
         .then(r => setUnreadCount(r.data.unread_count || 0))
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [user, location.pathname]);
 

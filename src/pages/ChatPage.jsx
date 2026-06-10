@@ -58,7 +58,7 @@ export default function ChatPage() {
     setMessages([{
       id: 'welcome',
       role: 'assistant',
-      content: `Xin chào! 👋 Tôi là **Trợ lý AI SV5T Đắk Lắk**.
+      content: `Xin chào! 👋 Tôi là **Trợ lý AI Hội Sinh Viên**.
 
 Tôi có thể giúp bạn:
 • 📋 Giải đáp mọi câu hỏi về tiêu chí **Sinh viên 5 tốt**
@@ -113,11 +113,10 @@ Bạn muốn hỏi gì hôm nay?`,
       setMessages(prev => [...prev, {
         id: Date.now(),
         role: 'assistant',
-        content: `📊 **Phân tích hồ sơ của bạn:**\n\n${res.data.summary}\n\n${
-          res.data.missing_categories.length > 0
+        content: `📊 **Phân tích hồ sơ của bạn:**\n\n${res.data.summary}\n\n${res.data.missing_categories.length > 0
             ? `**Tiêu chí cần bổ sung:**\n${res.data.missing_categories.map(c => `• ${c}`).join('\n')}`
             : '✅ Tất cả tiêu chí đều có minh chứng!'
-        }`
+          }`
       }]);
     } catch (err) {
       toast.error('Không thể phân tích hồ sơ.');

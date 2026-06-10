@@ -6,8 +6,8 @@ import { Eye, EyeOff, BookOpen, ArrowRight, Loader2, CheckCircle } from 'lucide-
 
 const STEPS = [
   { label: 'Tài khoản', icon: '📝' },
-  { label: 'Cá nhân',   icon: '👤' },
-  { label: 'Hoàn tất',  icon: '🚀' },
+  { label: 'Cá nhân', icon: '👤' },
+  { label: 'Hoàn tất', icon: '🚀' },
 ];
 
 export default function RegisterPage() {
@@ -55,8 +55,8 @@ export default function RegisterPage() {
 
   const heroTexts = [
     { title: 'Tạo tài khoản\nmiễn phí! ✨', sub: 'Bước 1/3 — Điền thông tin đăng nhập' },
-    { title: 'Thêm thông tin\ncủa bạn 👤',  sub: 'Bước 2/3 — Thông tin cá nhân (có thể bỏ qua)' },
-    { title: 'Gần xong rồi! 🎉',             sub: 'Bước 3/3 — Xác nhận và tạo tài khoản' },
+    { title: 'Thêm thông tin\ncủa bạn 👤', sub: 'Bước 2/3 — Thông tin cá nhân (có thể bỏ qua)' },
+    { title: 'Gần xong rồi! 🎉', sub: 'Bước 3/3 — Xác nhận và tạo tài khoản' },
   ];
 
   return (
@@ -72,8 +72,8 @@ export default function RegisterPage() {
           <div className="auth-brand-logo">
             <div className="auth-logo-icon"><BookOpen size={28} color="white" /></div>
             <div>
-              <div className="auth-logo-name">SV5T Đắk Lắk</div>
-              <div className="auth-logo-sub">HackAIthon 2026</div>
+              <div className="auth-logo-name">Hội Sinh Viên</div>
+              <div className="auth-logo-sub"></div>
             </div>
           </div>
 
@@ -108,7 +108,7 @@ export default function RegisterPage() {
           <div className="auth-mobile-logo">
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div className="auth-logo-icon"><BookOpen size={20} color="white" /></div>
-              <div className="auth-logo-name">SV5T Đắk Lắk</div>
+              <div className="auth-logo-name">Hội Sinh Viên</div>
             </div>
           </div>
 
@@ -282,9 +282,9 @@ export default function RegisterPage() {
                   <div className="auth-confirm-info">
                     {[
                       { label: 'Họ tên', value: form.full_name },
-                      { label: 'Email',  value: form.email },
-                      { label: 'MSV',    value: form.student_id || '(chưa nhập)' },
-                      { label: 'Lớp',    value: form.class_name || '(chưa nhập)' },
+                      { label: 'Email', value: form.email },
+                      { label: 'MSV', value: form.student_id || '(chưa nhập)' },
+                      { label: 'Lớp', value: form.class_name || '(chưa nhập)' },
                     ].map(r => (
                       <div key={r.label} className="auth-confirm-row">
                         <span className="auth-confirm-label">{r.label}</span>
@@ -309,8 +309,8 @@ export default function RegisterPage() {
                   {loading
                     ? <><Loader2 size={18} className="spin" />Đang tạo tài khoản...</>
                     : step < 2
-                    ? <>Tiếp theo <ArrowRight size={18} /></>
-                    : <>🚀 Tạo tài khoản</>}
+                      ? <>Tiếp theo <ArrowRight size={18} /></>
+                      : <>🚀 Tạo tài khoản</>}
                 </button>
               </div>
             </form>

@@ -39,8 +39,8 @@ export default function LoginPage() {
           <div className="auth-brand-logo">
             <div className="auth-logo-icon"><BookOpen size={28} color="white" /></div>
             <div>
-              <div className="auth-logo-name">SV5T Đắk Lắk</div>
-              <div className="auth-logo-sub">HackAIthon 2026</div>
+              <div className="auth-logo-name">Hội Sinh Viên</div>
+              <div className="auth-logo-sub"></div>
             </div>
           </div>
 
@@ -51,11 +51,11 @@ export default function LoginPage() {
 
           <div className="auth-criteria-grid">
             {[
-              { emoji: '🛡️', label: 'Đạo đức tốt',    color: '#818cf8' },
-              { emoji: '📚', label: 'Học tập tốt',    color: '#34d399' },
-              { emoji: '💪', label: 'Thể lực tốt',    color: '#fbbf24' },
+              { emoji: '🛡️', label: 'Đạo đức tốt', color: '#818cf8' },
+              { emoji: '📚', label: 'Học tập tốt', color: '#34d399' },
+              { emoji: '💪', label: 'Thể lực tốt', color: '#fbbf24' },
               { emoji: '❤️', label: 'Tình nguyện tốt', color: '#f87171' },
-              { emoji: '🌍', label: 'Hội nhập tốt',   color: '#c084fc' },
+              { emoji: '🌍', label: 'Hội nhập tốt', color: '#c084fc' },
             ].map(c => (
               <div key={c.label} className="auth-criteria-badge" style={{ '--badge-color': c.color }}>
                 <span>{c.emoji}</span><span>{c.label}</span>
@@ -82,7 +82,7 @@ export default function LoginPage() {
           <div className="auth-mobile-logo">
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div className="auth-logo-icon"><BookOpen size={20} color="white" /></div>
-              <div className="auth-logo-name">SV5T Đắk Lắk</div>
+              <div className="auth-logo-name">Hội Sinh Viên</div>
             </div>
           </div>
 

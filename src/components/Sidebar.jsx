@@ -8,29 +8,37 @@ import {
 import { useState } from 'react';
 
 const studentNav = [
-  { label: 'TỔNG QUAN', items: [
-    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/profile', icon: Star, label: 'Tiến độ 5 tốt' },
-  ]},
-  { label: 'HỒ SƠ', items: [
-    { path: '/application', icon: FileText, label: 'Hồ sơ của tôi' },
-    { path: '/evidences', icon: Upload, label: 'Minh chứng' },
-  ]},
-  { label: 'KHÁM PHÁ', items: [
-    { path: '/activities', icon: Calendar, label: 'Hoạt động' },
-    { path: '/chat', icon: MessageSquare, label: 'Trợ lý AI' },
-    { path: '/leaderboard', icon: Trophy, label: 'Bảng xếp hạng' },
-  ]},
+  {
+    label: 'TỔNG QUAN', items: [
+      { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+      { path: '/profile', icon: Star, label: 'Tiến độ 5 tốt' },
+    ]
+  },
+  {
+    label: 'HỒ SƠ', items: [
+      { path: '/application', icon: FileText, label: 'Hồ sơ của tôi' },
+      { path: '/evidences', icon: Upload, label: 'Minh chứng' },
+    ]
+  },
+  {
+    label: 'KHÁM PHÁ', items: [
+      { path: '/activities', icon: Calendar, label: 'Hoạt động' },
+      { path: '/chat', icon: MessageSquare, label: 'Trợ lý AI' },
+      { path: '/leaderboard', icon: Trophy, label: 'Bảng xếp hạng' },
+    ]
+  },
 ];
 
 const adminNav = [
-  { label: 'QUẢN TRỊ', items: [
-    { path: '/dashboard', icon: LayoutDashboard, label: 'Tổng quan' },
-    { path: '/admin/applications', icon: FileText, label: 'Duyệt hồ sơ' },
-    { path: '/admin/users', icon: Users, label: 'Sinh viên' },
-    { path: '/admin/activities', icon: Calendar, label: 'Quản lý hoạt động' },
-    { path: '/admin/stats', icon: BarChart2, label: 'Thống kê' },
-  ]},
+  {
+    label: 'QUẢN TRỊ', items: [
+      { path: '/dashboard', icon: LayoutDashboard, label: 'Tổng quan' },
+      { path: '/admin/applications', icon: FileText, label: 'Duyệt hồ sơ' },
+      { path: '/admin/users', icon: Users, label: 'Sinh viên' },
+      { path: '/admin/activities', icon: Calendar, label: 'Quản lý hoạt động' },
+      { path: '/admin/stats', icon: BarChart2, label: 'Thống kê' },
+    ]
+  },
 ];
 
 export default function Sidebar({ mobileOpen, onClose }) {
@@ -63,8 +71,8 @@ export default function Sidebar({ mobileOpen, onClose }) {
             <BookOpen size={22} color="white" />
           </div>
           <div className="sidebar-logo-text">
-            <div className="sidebar-logo-title">SV5T Đắk Lắk</div>
-            <div className="sidebar-logo-subtitle">HackAIthon 2026</div>
+            <div className="sidebar-logo-title">Hội Sinh Viên</div>
+            <div className="sidebar-logo-subtitle"></div>
           </div>
           <button
             onClick={onClose}
@@ -118,8 +126,8 @@ export default function Sidebar({ mobileOpen, onClose }) {
               <div className="sidebar-user-name">{user?.full_name || 'Người dùng'}</div>
               <div className="sidebar-user-role">
                 {user?.role === 'student' ? 'Sinh viên' :
-                 user?.role === 'union_officer' ? 'Cán bộ Hội' :
-                 user?.role === 'province_admin' ? 'Admin Tỉnh' : 'Super Admin'}
+                  user?.role === 'union_officer' ? 'Cán bộ Hội' :
+                    user?.role === 'province_admin' ? 'Admin Tỉnh' : 'Super Admin'}
               </div>
             </div>
             <button

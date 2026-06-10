@@ -76,7 +76,7 @@ export default function LandingPage() {
                 Chào mừng trở lại!
               </h1>
               <p style={{ color: 'var(--gray-500)', fontSize: 14 }}>
-                Đăng nhập vào SV5T Đắk Lắk
+                Đăng nhập vào Hội Sinh Viên
               </p>
             </div>
 
@@ -290,7 +290,7 @@ export default function LandingPage() {
           }}>
             <BookOpen size={18} color="white" />
           </div>
-          <span style={{ color: 'white', fontWeight: 800, fontSize: 16 }}>SV5T Đắk Lắk</span>
+          <span style={{ color: 'white', fontWeight: 800, fontSize: 16 }}>Hội Sinh Viên</span>
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
           <button
@@ -318,7 +318,7 @@ export default function LandingPage() {
         <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: 900, padding: '0 20px' }}>
           <div className="chip" style={{ marginBottom: 24, display: 'inline-flex' }}>
             <Star size={14} />
-            HackAIthon 2026 — Bảng B, Đề tài số 5
+            — Bảng B, Đề tài số 5
           </div>
 
           <h1 style={{
@@ -428,7 +428,7 @@ export default function LandingPage() {
         textAlign: 'center'
       }}>
         <h2 style={{ color: 'white', fontSize: 32, fontWeight: 800, marginBottom: 12 }}>
-          Sẵn sàng cho HackAIthon 2026?
+          Sẵn sàng cho ?
         </h2>
         <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 16, marginBottom: 28 }}>
           Hệ Sinh viên Đắk Lắk — Giải pháp AI đột phá cho Hội Sinh viên
@@ -445,7 +445,7 @@ export default function LandingPage() {
         background: 'var(--gray-900)', color: 'rgba(255,255,255,0.4)',
         textAlign: 'center', padding: '24px 20px', fontSize: 13
       }}>
-        © 2026 SV5T Đắk Lắk · HackAIthon 2026 · CLB Sinh viên 5 tốt tỉnh Đắk Lắk
+        © 2026 Hội Sinh Viên ·  · CLB Sinh viên 5 tốt tỉnh Đắk Lắk
       </footer>
     </div>
   );
