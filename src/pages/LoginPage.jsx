@@ -134,6 +134,8 @@ export default function LoginPage() {
                     onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
                     required
                     autoComplete="current-password"
+                    autoCapitalize="none"
+                    autoCorrect="off"
                     style={{ paddingRight: 48 }}
                   />
                   <button type="button" className="auth-eye-btn" onClick={() => setShowPass(p => !p)} tabIndex={-1}>
