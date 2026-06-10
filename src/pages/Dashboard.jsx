@@ -37,7 +37,7 @@ function RadarChart({ data }) {
   });
 
   const dataPoints = data.map((d, i) => {
-    const pt = getPoint(i, d.completion_pct || 0);
+    const pt = getPoint(i, d.completionPct || 0);
     return `${pt.x},${pt.y}`;
   }).join(' ');
 
@@ -56,7 +56,7 @@ function RadarChart({ data }) {
         strokeLinejoin="round"
       />
       {data.map((d, i) => {
-        const pt = getPoint(i, d.completion_pct || 0);
+        const pt = getPoint(i, d.completionPct || 0);
         return (
           <circle key={i} cx={pt.x} cy={pt.y} r="4" fill={CRITERIA[i]?.color || '#3b82f6'} />
         );
@@ -209,8 +209,8 @@ export default function Dashboard() {
   }
 
   // Student Dashboard
-  const progressData = progress?.progress || CRITERIA.map(c => ({ ...c, completion_pct: 0 }));
-  const overallPct = Math.round(progressData.reduce((s, p) => s + (p.completion_pct || 0), 0) / 5);
+  const progressData = progress?.progress || CRITERIA.map(c => ({ ...c, completionPct: 0 }));
+  const overallPct = Math.round(progressData.reduce((s, p) => s + (p.completionPct || 0), 0) / 5);
 
   return (
     <div className="page-container">
@@ -263,7 +263,7 @@ export default function Dashboard() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {CRITERIA.map((cat, i) => {
               const prog = progressData[i] || {};
-              const pct = prog.completion_pct || 0;
+              const pct = prog.completionPct || 0;
               return (
                 <div key={cat.code}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -271,7 +271,7 @@ export default function Dashboard() {
                       {cat.emoji} {cat.name}
                     </span>
                     <span style={{ fontSize: 13, fontWeight: 700, color: cat.color }}>
-                      {prog.valid_count || 0} minh chứng · {pct}%
+                      {prog.validCount || 0} minh chứng · {pct}%
                     </span>
                   </div>
                   <div className="progress-bar">
