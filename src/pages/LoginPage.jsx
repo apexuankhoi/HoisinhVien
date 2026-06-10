@@ -20,7 +20,16 @@ export default function LoginPage() {
       navigate('/dashboard');
       toast.success('Đăng nhập thành công!');
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Email hoặc mật khẩu không đúng');
+      if (err.response) {
+        const srvErr = err.response.data?.error;
+        if (srvErr && typeof srvErr === 'string') {
+          toast.error(srvErr);
+        } else {
+          toast.error(`Lỗi ${err.response.status}: Server hoặc Cloudflare chặn IP (không đọc được JSON)`);
+        }
+      } else {
+        toast.error(`Lỗi hệ thống: ${err.message}`);
+      }
     } finally {
       setLoading(false);
     }

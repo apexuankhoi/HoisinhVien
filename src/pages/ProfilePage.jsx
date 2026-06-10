@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { User, Mail, Shield, Book, Upload } from 'lucide-react';
 
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(user?.avatarUrl);
 
@@ -27,9 +27,10 @@ export default function ProfilePage() {
       const res = await api.post('/evidences/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      const fileUrl = res.data.fileUrl;
+      const fileUrl = res.data.evidence.fileUrl;
       
-      await api.put('/users/me', { avatarUrl: fileUrl });
+      await api.put('/users/profile', { avatar_url: fileUrl });
+      updateUser({ avatarUrl: fileUrl });
       toast.success('Cập nhật ảnh đại diện thành công!', { id: toastId });
     } catch (err) {
       toast.error('Lỗi khi tải ảnh lên.', { id: toastId });
