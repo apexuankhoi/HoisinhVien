@@ -3,6 +3,8 @@ import { Bell, Menu, Search } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../lib/api';
 import { useLocation } from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 const pageTitles = {
   '/dashboard': 'Dashboard',
@@ -22,6 +24,9 @@ export default function Topbar({ onMenuClick }) {
   const { user } = useAuth();
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotif, setShowNotif] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [loadingNotif, setLoadingNotif] = useState(false);
 
   const title = pageTitles[location.pathname] || 'Hội Sinh Viên';
 
@@ -32,6 +37,31 @@ export default function Topbar({ onMenuClick }) {
         .catch(() => { });
     }
   }, [user, location.pathname]);
+
+  const toggleNotif = async () => {
+    setShowNotif(!showNotif);
+    if (!showNotif) {
+      setLoadingNotif(true);
+      try {
+        const res = await api.get('/notifications?limit=5');
+        setNotifications(res.data.notifications || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingNotif(false);
+      }
+    }
+  };
+
+  const markAsRead = async (id) => {
+    try {
+      await api.patch(`/notifications/${id}/read`);
+      setNotifications(notifications.map(n => n._id === id ? { ...n, isRead: true } : n));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <header className="topbar">
@@ -48,15 +78,46 @@ export default function Topbar({ onMenuClick }) {
         </div>
       </div>
 
-      <div className="topbar-actions">
+      <div className="topbar-actions" style={{ position: 'relative' }}>
         <button
           className="icon-btn"
           id="notifications-btn"
-          onClick={() => window.location.href = '#notifications'}
+          onClick={toggleNotif}
         >
           <Bell size={18} />
           {unreadCount > 0 && <span className="notif-dot" />}
         </button>
+
+        {showNotif && (
+          <div className="notif-dropdown">
+            <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h4 style={{ margin: 0, fontSize: 14, fontWeight: 700 }}>Thông báo</h4>
+              {unreadCount > 0 && <span style={{ fontSize: 12, color: 'var(--primary-light)', cursor: 'pointer' }}>Đánh dấu đã đọc</span>}
+            </div>
+            <div style={{ maxHeight: 300, overflowY: 'auto' }}>
+              {loadingNotif ? (
+                <div style={{ padding: 20, textAlign: 'center', color: 'var(--gray-500)', fontSize: 13 }}>Đang tải...</div>
+              ) : notifications.length === 0 ? (
+                <div style={{ padding: 20, textAlign: 'center', color: 'var(--gray-500)', fontSize: 13 }}>Không có thông báo mới.</div>
+              ) : (
+                notifications.map(n => (
+                  <div key={n._id} className={`notif-item ${!n.isRead ? 'unread' : ''}`} onClick={() => markAsRead(n._id)}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13, fontWeight: !n.isRead ? 600 : 400, color: 'var(--gray-900)' }}>{n.title}</div>
+                      <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 4 }}>{n.content}</div>
+                      <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 4 }}>
+                        {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true, locale: vi })}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            <div style={{ padding: 10, textAlign: 'center', borderTop: '1px solid var(--gray-100)', background: 'var(--gray-50)' }}>
+              <a href="#all" style={{ fontSize: 12, color: 'var(--primary-light)', fontWeight: 600 }}>Xem tất cả</a>
+            </div>
+          </div>
+        )}
 
         <div
           style={{

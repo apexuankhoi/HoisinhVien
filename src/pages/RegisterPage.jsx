@@ -33,7 +33,7 @@ export default function RegisterPage() {
     const formData = new FormData();
     formData.append('cccd', file);
 
-    const tid = toast.loading('🔍 Đang nhờ AI đọc CCCD của bạn...');
+    const tid = toast.loading('🔍 Đang nhờ AI đọc Thẻ sinh viên của bạn...');
     try {
       const res = await api.post('/auth/ekyc', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -58,7 +58,7 @@ export default function RegisterPage() {
       }));
       toast.success('✨ AI đã điền tự động dữ liệu thành công!', { id: tid });
     } catch (err) {
-      toast.error(err.response?.data?.error || 'AI không đọc được CCCD này. Xin thử lại.', { id: tid });
+      toast.error(err.response?.data?.error || 'AI không đọc được thẻ này. Xin thử lại.', { id: tid });
     } finally {
       setKycLoading(false);
       e.target.value = '';
@@ -206,10 +206,10 @@ export default function RegisterPage() {
                       onClick={() => fileInputRef.current?.click()}
                       disabled={kycLoading}
                     >
-                      {kycLoading ? '⏳ Đang phân tích...' : '📸 Quét mặt trước CCCD để điền tự động'}
+                      {kycLoading ? '⏳ Đang phân tích...' : '📸 Quét Thẻ sinh viên để điền tự động'}
                     </button>
                     <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--gray-500)', marginTop: 8 }}>
-                      Chỉ với 1 chạm, AI sẽ tự động lấy thông tin từ CCCD
+                      Chỉ với 1 chạm, AI sẽ tự động lấy thông tin từ Thẻ sinh viên
                     </div>
                   </div>
                   

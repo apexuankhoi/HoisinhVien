@@ -406,7 +406,7 @@ export default function LandingPage() {
 
           <div className="grid grid-4" style={{ gap: 24 }}>
             {[
-              { icon: '🪪', title: 'VNPT eKYC', desc: 'Xác thực danh tính qua CCCD/Thẻ sinh viên. Tự động điền thông tin hồ sơ.' },
+              { icon: '🪪', title: 'VNPT eKYC', desc: 'Xác thực danh tính qua Thẻ sinh viên. Tự động điền thông tin hồ sơ.' },
               { icon: '🔍', title: 'SmartReader OCR', desc: 'AI tự động đọc và trích xuất nội dung từ giấy khen, chứng nhận.' },
               { icon: '🤖', title: 'Smartbot AI', desc: 'Trợ lý ảo hỏi đáp quy chế 5 tốt. Tư vấn lộ trình cá nhân hóa.' },
               { icon: '📱', title: 'Zalo OTT', desc: 'Thông báo tự động qua Zalo. Nhắc nhở tiêu chí còn thiếu.' },

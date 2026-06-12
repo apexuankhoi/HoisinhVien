@@ -105,17 +105,17 @@ export default function ProfilePage() {
     const file = e.target.files[0];
     if (!file) return;
     setLoading(true);
-    const toastId = toast.loading('AI đang quét và phân tích CCCD...');
+    const toastId = toast.loading('AI đang quét và phân tích Thẻ sinh viên...');
     try {
       const base64DataUrl = await fileToBase64(file);
       const base64Str = base64DataUrl.split(',')[1];
       const res = await api.post('/ai/ekyc', { image_base64: base64Str, mime_type: file.type });
       const { result, message } = res.data;
       if (result.valid) {
-        toast.success(message || 'Xác thực thẻ CCCD thành công!', { id: toastId });
+        toast.success(message || 'Xác thực thẻ sinh viên thành công!', { id: toastId });
         updateUser({ ekyc_verified: true, ekycVerified: true, full_name: result.full_name || user.full_name });
       } else {
-        toast.error('Ảnh không hợp lệ. Vui lòng chụp rõ mặt trước CCCD.', { id: toastId });
+        toast.error('Ảnh không hợp lệ. Vui lòng chụp rõ mặt trước Thẻ sinh viên.', { id: toastId });
       }
     } catch (err) {
       toast.error(err.response?.data?.error || 'Lỗi hệ thống khi phân tích ảnh', { id: toastId });
@@ -362,7 +362,7 @@ export default function ProfilePage() {
                 <p style={{ fontSize: 13, color: isVerified ? '#065f46' : '#92400e', marginTop: 8 }}>
                   {isVerified
                     ? 'Tài khoản của bạn đã được xác minh qua AI eKYC. Bạn được cộng 5 điểm bonus cho mỗi tiêu chí.'
-                    : 'Xác minh CCCD giúp tăng độ tin cậy của hồ sơ và cộng thêm điểm bonus khi chấm điểm.'}
+                    : 'Xác minh Thẻ sinh viên giúp tăng độ tin cậy của hồ sơ và cộng thêm điểm bonus khi chấm điểm.'}
                 </p>
               </div>
 
@@ -377,11 +377,11 @@ export default function ProfilePage() {
                     onClick={() => fileInputRef.current?.click()}
                     disabled={loading}
                   >
-                    <Camera size={16} /> {loading ? '⏳ Đang phân tích...' : '📸 Chụp / Upload CCCD để xác minh'}
+                    <Camera size={16} /> {loading ? '⏳ Đang phân tích...' : '📸 Chụp / Upload Thẻ sinh viên để xác minh'}
                   </button>
                   <input type="file" hidden accept="image/*" capture="environment" ref={fileInputRef} onChange={handleEkycCapture} />
                   <p style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 8, textAlign: 'center' }}>
-                    Ảnh CCCD chỉ được dùng để xác minh danh tính và không được lưu trữ
+                    Ảnh Thẻ sinh viên chỉ được dùng để xác minh danh tính và không được lưu trữ
                   </p>
                 </div>
               )}

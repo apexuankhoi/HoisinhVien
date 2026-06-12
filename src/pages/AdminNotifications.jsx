@@ -29,7 +29,7 @@ export default function AdminNotifications() {
   const loadUniversities = async () => {
     setLoadingUnis(true);
     try {
-      const res = await api.get('/admin/universities');
+      const res = await api.get('/universities');
       setUniversities(res.data.universities || []);
     } catch (err) {
       toast.error('Không thể tải danh sách trường.');
