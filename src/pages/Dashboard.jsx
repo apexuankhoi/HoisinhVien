@@ -122,14 +122,18 @@ export default function Dashboard() {
     );
   }
 
-  const isAdmin = ['union_officer', 'province_admin', 'super_admin'].includes(user?.role);
+  const isAdmin = ['union_officer', 'province_admin', 'super_admin', 'admin'].includes(user?.role);
 
   if (isAdmin) {
+    // Lấy tên ngắn từ fullName hoặc full_name
+    const displayName = (user?.fullName || user?.full_name || '').split(' ').slice(-1)[0];
     return (
       <div className="page-container">
         <div style={{ marginBottom: 24 }}>
-          <h2 style={{ fontSize: 24, fontWeight: 800 }}>Chào buổi sáng, {user?.full_name?.split(' ').slice(-1)[0]}! 👋</h2>
-          <p style={{ color: 'var(--gray-500)', marginTop: 4 }}>Hội đồng xét duyệt — Năm học 2025-2026</p>
+          <h2 style={{ fontSize: 24, fontWeight: 800 }}>Chào, {displayName}! 👋</h2>
+          <p style={{ color: 'var(--gray-500)', marginTop: 4 }}>
+            {user?.role === 'admin' || user?.role === 'super_admin' ? 'Admin hệ thống' : 'Hội đồng xét duyệt'} — Năm học 2025-2026
+          </p>
         </div>
 
         <div className="grid grid-4" style={{ marginBottom: 28 }}>
@@ -230,7 +234,7 @@ export default function Dashboard() {
             <Zap size={12} /> Năm học 2025-2026
           </div>
           <h2 style={{ color: 'white', fontSize: 24, fontWeight: 800, marginBottom: 6 }}>
-            Chào {user?.full_name?.split(' ').slice(-1)[0]}! 👋
+            Chào {(user?.fullName || user?.full_name || '').split(' ').slice(-1)[0]}! 👋
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>
             Hồ sơ của bạn đang đạt <strong style={{ color: '#fbbf24' }}>{overallPct}%</strong> tiến độ.

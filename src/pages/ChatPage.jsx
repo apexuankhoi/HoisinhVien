@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Send, Bot, User, Plus, Sparkles, BookOpen, FileText, Calendar } from 'lucide-react';
+import { Send, Bot, User, Sparkles } from 'lucide-react';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
 
@@ -15,30 +15,16 @@ const SUGGESTIONS = [
 function MessageBubble({ msg }) {
   const isUser = msg.role === 'user';
   return (
-    <div style={{ display: 'flex', gap: 10, justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
+    <div className={`bubble-wrapper ${isUser ? 'user' : 'assistant'}`}>
       {!isUser && (
-        <div style={{
-          width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-          background: 'var(--gradient-primary)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center'
-        }}>
-          <Bot size={16} color="white" />
+        <div className="avatar-assistant">
+          <Bot size={18} color="white" />
         </div>
       )}
       <div
-        className={`chat-bubble ${isUser ? 'user' : 'assistant'}`}
-        style={{ maxWidth: '75%' }}
+        className={`bubble-content ${isUser ? 'user' : 'assistant'}`}
         dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>') }}
       />
-      {isUser && (
-        <div style={{
-          width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-          background: 'var(--gray-200)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center'
-        }}>
-          <User size={16} color="var(--gray-600)" />
-        </div>
-      )}
     </div>
   );
 }
@@ -49,12 +35,10 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationId] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
-  const [analysis, setAnalysis] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
   useEffect(() => {
-    // Initial greeting message
     setMessages([{
       id: 'welcome',
       role: 'assistant',
@@ -100,7 +84,10 @@ Bạn muốn hỏi gì hôm nay?`,
       }]);
     } finally {
       setLoading(false);
-      inputRef.current?.focus();
+      // Only focus on desktop to avoid keyboard popping up unnecessarily on mobile
+      if (window.innerWidth > 768) {
+        inputRef.current?.focus();
+      }
     }
   };
 
@@ -108,8 +95,7 @@ Bạn muốn hỏi gì hôm nay?`,
     setAnalyzing(true);
     try {
       const res = await api.post('/ai/analyze-profile', {});
-      setAnalysis(res.data);
-
+      
       setMessages(prev => [...prev, {
         id: Date.now(),
         role: 'assistant',
@@ -133,48 +119,36 @@ Bạn muốn hỏi gì hôm nay?`,
   };
 
   return (
-    <div className="page-container" style={{ height: 'calc(100dvh - 100px)', display: 'flex', flexDirection: 'column', padding: '12px' }}>
-      <div style={{ display: 'flex', gap: 16, height: '100%' }}>
-        {/* Sidebar gợi ý */}
-        <div className="hide-mobile" style={{ width: 240, flexShrink: 0 }}>
-          <div className="card" style={{ height: '100%', overflow: 'auto' }}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Sparkles size={16} color="var(--accent)" />
+    <div className="chat-page-root">
+      <div className="chat-wrapper">
+        {/* Sidebar Gợi ý */}
+        <div className="chat-sidebar hide-mobile">
+          <div className="chat-sidebar-card">
+            <div className="sidebar-header">
+              <div className="icon-wrap"><Sparkles size={16} color="white" /></div>
               Câu hỏi gợi ý
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div className="suggestion-list">
               {SUGGESTIONS.map((s, i) => (
-                <button
-                  key={i}
-                  onClick={() => sendMessage(s)}
-                  style={{
-                    background: 'var(--gray-50)', border: '1px solid var(--gray-200)',
-                    borderRadius: 10, padding: '10px 12px', textAlign: 'left',
-                    fontSize: 12, color: 'var(--gray-700)', cursor: 'pointer',
-                    lineHeight: 1.5, transition: 'var(--transition-fast)'
-                  }}
-                  onMouseOver={e => e.target.style.background = '#eff6ff'}
-                  onMouseOut={e => e.target.style.background = 'var(--gray-50)'}
-                >
-                  💬 {s}
+                <button key={i} onClick={() => sendMessage(s)} className="suggestion-btn">
+                  {s}
                 </button>
               ))}
             </div>
 
-            <div style={{ marginTop: 20, borderTop: '1px solid var(--gray-200)', paddingTop: 16 }}>
-              <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Bot size={16} color="var(--primary-light)" />
+            <div className="analyze-section">
+              <div className="sidebar-header" style={{ marginBottom: 12 }}>
+                <div className="icon-wrap bot"><Bot size={16} color="white" /></div>
                 AI Phân tích
               </div>
               <button
                 onClick={analyzeProfile}
                 className="btn btn-primary btn-full"
                 disabled={analyzing}
-                style={{ fontSize: 13 }}
               >
                 {analyzing ? '⏳ Đang phân tích...' : '🔍 Phân tích hồ sơ tôi'}
               </button>
-              <p style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 8, lineHeight: 1.5 }}>
+              <p className="analyze-desc">
                 AI sẽ quét toàn bộ minh chứng của bạn và đưa ra gợi ý cụ thể.
               </p>
             </div>
@@ -182,55 +156,35 @@ Bạn muốn hỏi gì hôm nay?`,
         </div>
 
         {/* Chat Main */}
-        <div className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
+        <div className="chat-main-card">
           {/* Header */}
-          <div style={{
-            padding: '16px 20px',
-            borderBottom: '1px solid var(--gray-200)',
-            display: 'flex', alignItems: 'center', gap: 12
-          }}>
-            <div style={{
-              width: 40, height: 40, borderRadius: '50%',
-              background: 'var(--gradient-primary)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}>
-              <Bot size={20} color="white" />
+          <div className="chat-header">
+            <div className="header-avatar">
+              <Bot size={22} color="white" />
             </div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 15 }}>Trợ lý AI SV5T</div>
-              <div style={{ fontSize: 12, color: 'var(--success)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--success)' }} />
+              <div className="header-title">Trợ lý AI SV5T</div>
+              <div className="header-status">
+                <div className="status-dot" />
                 Đang hoạt động · Powered by VNPT Smartbot
               </div>
             </div>
           </div>
 
           {/* Messages */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div className="chat-messages">
             {messages.map((msg) => (
               <MessageBubble key={msg.id} msg={msg} />
             ))}
             {loading && (
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                <div style={{
-                  width: 32, height: 32, borderRadius: '50%',
-                  background: 'var(--gradient-primary)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-                }}>
-                  <Bot size={16} color="white" />
+              <div className="bubble-wrapper assistant">
+                <div className="avatar-assistant">
+                  <Bot size={18} color="white" />
                 </div>
-                <div style={{
-                  background: 'white', border: '1px solid var(--gray-200)',
-                  borderRadius: '18px 18px 18px 4px',
-                  padding: '12px 16px', display: 'flex', gap: 4
-                }}>
-                  {[0, 1, 2].map(i => (
-                    <div key={i} style={{
-                      width: 8, height: 8, borderRadius: '50%',
-                      background: 'var(--gray-400)',
-                      animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite`
-                    }} />
-                  ))}
+                <div className="bubble-content loading">
+                  <div className="typing-dot" style={{ animationDelay: '0s' }} />
+                  <div className="typing-dot" style={{ animationDelay: '0.2s' }} />
+                  <div className="typing-dot" style={{ animationDelay: '0.4s' }} />
                 </div>
               </div>
             )}
@@ -238,18 +192,10 @@ Bạn muốn hỏi gì hôm nay?`,
           </div>
 
           {/* Mobile suggestions */}
-          <div className="show-mobile" style={{ padding: '8px 16px', overflowX: 'auto' }}>
-            <div style={{ display: 'flex', gap: 8, width: 'max-content' }}>
-              {SUGGESTIONS.slice(0, 3).map((s, i) => (
-                <button
-                  key={i}
-                  onClick={() => sendMessage(s)}
-                  style={{
-                    background: 'var(--gray-100)', border: '1px solid var(--gray-200)',
-                    borderRadius: 20, padding: '6px 14px', fontSize: 12,
-                    color: 'var(--gray-700)', cursor: 'pointer', whiteSpace: 'nowrap'
-                  }}
-                >
+          <div className="mobile-suggestions show-mobile">
+            <div className="mobile-suggestions-scroll">
+              {SUGGESTIONS.slice(0, 4).map((s, i) => (
+                <button key={i} onClick={() => sendMessage(s)} className="mobile-suggestion-btn">
                   {s}
                 </button>
               ))}
@@ -257,50 +203,401 @@ Bạn muốn hỏi gì hôm nay?`,
           </div>
 
           {/* Input */}
-          <div style={{
-            padding: '12px 14px',
-            borderTop: '1px solid var(--gray-200)',
-            display: 'flex', gap: 8, background: 'white'
-          }}>
-            <textarea
-              ref={inputRef}
-              id="chat-input"
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Nhập câu hỏi... (Enter để gửi)"
-              style={{
-                flex: 1, padding: '10px 14px',
-                border: '2px solid var(--gray-200)',
-                borderRadius: 12, fontSize: 14,
-                fontFamily: 'inherit', resize: 'none',
-                height: 44, maxHeight: 120, outline: 'none',
-                transition: 'border-color 0.2s',
-                lineHeight: 1.5
-              }}
-              onFocus={e => e.target.style.borderColor = 'var(--primary-light)'}
-              onBlur={e => e.target.style.borderColor = 'var(--gray-200)'}
-              rows={1}
-            />
-            <button
-              id="send-btn"
-              onClick={() => sendMessage()}
-              className="btn btn-primary"
-              disabled={loading || !input.trim()}
-              style={{ borderRadius: 12, padding: '0 14px', flexShrink: 0 }}
-            >
-              <Send size={18} />
-            </button>
+          <div className="chat-input-container">
+            <div className="input-wrapper">
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Nhập câu hỏi... (Enter để gửi)"
+                className="chat-textarea"
+                rows={1}
+              />
+              <button
+                onClick={() => sendMessage()}
+                disabled={loading || !input.trim()}
+                className="send-btn"
+              >
+                <Send size={18} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       <style>{`
-        @keyframes pulse {
-          0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
-          40% { transform: scale(1.2); opacity: 1; }
+        /* Root Layout */
+        .chat-page-root {
+          height: calc(100dvh - var(--header-height, 64px));
+          display: flex;
+          background: #f1f5f9;
+        }
+
+        .chat-wrapper {
+          display: flex;
+          gap: 20px;
+          height: 100%;
+          max-width: 1200px;
+          margin: 0 auto;
+          width: 100%;
+          padding: 24px;
+        }
+
+        /* Sidebar */
+        .chat-sidebar {
+          width: 280px;
+          flex-shrink: 0;
+        }
+        .chat-sidebar-card {
+          background: white;
+          border-radius: 20px;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+          border: 1px solid rgba(0,0,0,0.05);
+          overflow-y: auto;
+        }
+        .sidebar-header {
+          font-weight: 700;
+          font-size: 15px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 20px 20px 12px;
+          color: var(--gray-800);
+        }
+        .icon-wrap {
+          width: 28px;
+          height: 28px;
+          border-radius: 8px;
+          background: linear-gradient(135deg, #f59e0b, #fbbf24);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 10px rgba(245, 158, 11, 0.2);
+        }
+        .icon-wrap.bot {
+          background: linear-gradient(135deg, #3b82f6, #06b6d4);
+          box-shadow: 0 2px 10px rgba(59, 130, 246, 0.2);
+        }
+        .suggestion-list {
+          padding: 0 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .suggestion-btn {
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          padding: 12px 16px;
+          text-align: left;
+          font-size: 13px;
+          color: #475569;
+          cursor: pointer;
+          line-height: 1.5;
+          transition: all 0.2s;
+          position: relative;
+          overflow: hidden;
+        }
+        .suggestion-btn:hover {
+          background: #eff6ff;
+          border-color: #bfdbfe;
+          color: #1e40af;
+          transform: translateY(-1px);
+        }
+        .analyze-section {
+          margin-top: auto;
+          border-top: 1px solid #f1f5f9;
+          padding: 20px;
+          background: #f8fafc;
+        }
+        .analyze-desc {
+          font-size: 12px;
+          color: #64748b;
+          margin-top: 12px;
+          line-height: 1.5;
+          text-align: center;
+        }
+
+        /* Main Chat Area */
+        .chat-main-card {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          background: white;
+          border-radius: 20px;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+          border: 1px solid rgba(0,0,0,0.05);
+          overflow: hidden;
+        }
+        .chat-header {
+          padding: 16px 24px;
+          background: rgba(255,255,255,0.9);
+          backdrop-filter: blur(10px);
+          border-bottom: 1px solid #f1f5f9;
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          z-index: 10;
+        }
+        .header-avatar {
+          width: 44px;
+          height: 44px;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        }
+        .header-title {
+          font-weight: 800;
+          font-size: 16px;
+          color: #0f172a;
+        }
+        .header-status {
+          font-size: 12px;
+          color: #10b981;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-weight: 500;
+          margin-top: 2px;
+        }
+        .status-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #10b981;
+          box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
+        }
+
+        /* Messages */
+        .chat-messages {
+          flex: 1;
+          overflow-y: auto;
+          padding: 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+        .bubble-wrapper {
+          display: flex;
+          gap: 12px;
+          max-width: 85%;
+          animation: slideUpFade 0.3s ease-out forwards;
+        }
+        .bubble-wrapper.user {
+          align-self: flex-end;
+          flex-direction: row-reverse;
+        }
+        .bubble-wrapper.assistant {
+          align-self: flex-start;
+        }
+        .avatar-assistant {
+          width: 36px;
+          height: 36px;
+          border-radius: 10px;
+          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          box-shadow: 0 2px 8px rgba(59,130,246,0.2);
+        }
+        .bubble-content {
+          padding: 14px 20px;
+          border-radius: 20px;
+          font-size: 15px;
+          line-height: 1.6;
+          word-break: break-word;
+        }
+        .bubble-content strong {
+          font-weight: 700;
+        }
+        .bubble-wrapper.user .bubble-content {
+          background: linear-gradient(135deg, #3b82f6, #2563eb);
+          color: white;
+          border-bottom-right-radius: 4px;
+          box-shadow: 0 4px 12px rgba(37,99,235,0.2);
+        }
+        .bubble-wrapper.assistant .bubble-content {
+          background: white;
+          color: #334155;
+          border: 1px solid #e2e8f0;
+          border-bottom-left-radius: 4px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        /* Loading */
+        .bubble-content.loading {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 16px 20px;
+        }
+        .typing-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #94a3b8;
+          animation: typingBounce 1.4s infinite ease-in-out both;
+        }
+
+        /* Input */
+        .chat-input-container {
+          padding: 16px 24px;
+          background: white;
+          border-top: 1px solid #f1f5f9;
+        }
+        .input-wrapper {
+          display: flex;
+          align-items: flex-end;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 24px;
+          padding: 6px 6px 6px 20px;
+          transition: all 0.2s;
+        }
+        .input-wrapper:focus-within {
+          background: white;
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+        }
+        .chat-textarea {
+          flex: 1;
+          padding: 10px 0;
+          background: transparent;
+          border: none;
+          outline: none;
+          font-size: 15px;
+          resize: none;
+          max-height: 120px;
+          line-height: 1.5;
+          color: #0f172a;
+          font-family: inherit;
+        }
+        .chat-textarea::placeholder {
+          color: #94a3b8;
+        }
+        .send-btn {
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #3b82f6, #2563eb);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s;
+          flex-shrink: 0;
+          box-shadow: 0 2px 10px rgba(37,99,235,0.2);
+        }
+        .send-btn:hover:not(:disabled) {
+          transform: scale(1.05);
+          box-shadow: 0 4px 15px rgba(37,99,235,0.3);
+        }
+        .send-btn:disabled {
+          background: #cbd5e1;
+          box-shadow: none;
+          cursor: not-allowed;
+          opacity: 0.7;
+        }
+
+        /* Mobile specific utilities */
+        .show-mobile {
+          display: none;
+        }
+
+        /* Animations */
+        @keyframes slideUpFade {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes typingBounce {
+          0%, 80%, 100% { transform: scale(0); }
+          40% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+          .chat-page-root {
+            /* Fix layout for mobile safari / bottom navbars */
+            height: 100dvh;
+            /* Adjust if App Layout adds padding for topbar */
+            margin-top: calc(var(--header-height, 64px) * -1);
+            padding-top: var(--header-height, 64px);
+          }
+          .chat-wrapper {
+            padding: 0;
+          }
+          .hide-mobile {
+            display: none !important;
+          }
+          .show-mobile {
+            display: block;
+          }
+          .chat-main-card {
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
+          }
+          .chat-header {
+            padding: 12px 16px;
+            border-radius: 0;
+          }
+          .chat-messages {
+            padding: 16px;
+            gap: 16px;
+          }
+          .bubble-wrapper {
+            max-width: 90%;
+          }
+          .bubble-content {
+            padding: 12px 16px;
+            font-size: 14px;
+          }
+          
+          .mobile-suggestions {
+            padding: 8px 0;
+            background: #f8fafc;
+            border-top: 1px solid #f1f5f9;
+          }
+          .mobile-suggestions-scroll {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px;
+            overflow-x: auto;
+            scrollbar-width: none; /* Firefox */
+          }
+          .mobile-suggestions-scroll::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+          }
+          .mobile-suggestion-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 8px 14px;
+            font-size: 13px;
+            color: #475569;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+          }
+          
+          .chat-input-container {
+            padding: 12px 16px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+            border-top: none;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+          }
         }
       `}</style>
     </div>
   );
 }
+

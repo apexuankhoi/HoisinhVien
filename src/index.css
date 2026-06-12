@@ -192,6 +192,37 @@ h6 {
   }
 }
 
+/* ─── Grid Utilities ─────────────────────────────────────────── */
+.grid {
+  display: grid;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ─── Buttons ───────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
@@ -413,6 +444,11 @@ h6 {
 .badge-gray {
   background: var(--gray-100);
   color: var(--gray-600);
+}
+
+.badge-orange {
+  background: #fff7ed;
+  color: #c2410c;
 }
 
 /* ─── Status Badges ─────────────────────────────────────────── */

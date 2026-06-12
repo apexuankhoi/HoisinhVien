@@ -153,6 +153,12 @@ export default function LoginPage() {
                 </div>
               </div>
 
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: -4, marginBottom: 8 }}>
+                <Link to="/forgot-password" style={{ fontSize: 12, color: 'var(--primary-light)', textDecoration: 'none' }}>
+                  Quên mật khẩu?
+                </Link>
+              </div>
+
               <button id="login-submit" type="submit" className="auth-submit-btn" disabled={loading}>
                 {loading ? <><Loader2 size={18} className="spin" />Đang đăng nhập...</> : <>Đăng nhập <ArrowRight size={18} /></>}
               </button>

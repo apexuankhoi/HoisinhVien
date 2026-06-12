@@ -3,7 +3,8 @@ import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, FileText, Upload, Calendar, MessageSquare,
   Trophy, Bell, Settings, LogOut, Users, BarChart2,
-  BookOpen, Star, Menu, X
+  BookOpen, Star, Menu, X, ShieldCheck, UserCog,
+  Building, ClipboardList, PieChart, ScrollText, BellRing
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -34,9 +35,48 @@ const adminNav = [
     label: 'QUẢN TRỊ', items: [
       { path: '/dashboard', icon: LayoutDashboard, label: 'Tổng quan' },
       { path: '/admin/applications', icon: FileText, label: 'Duyệt hồ sơ' },
-      { path: '/admin/users', icon: Users, label: 'Sinh viên' },
-      { path: '/admin/activities', icon: Calendar, label: 'Quản lý hoạt động' },
-      { path: '/admin/stats', icon: BarChart2, label: 'Thống kê' },
+      { path: '/admin/users', icon: Users, label: 'Quản lý sinh viên' },
+      { path: '/admin/activities', icon: Calendar, label: 'Hoạt động' },
+      { path: '/admin/notifications', icon: BellRing, label: 'Gửi thông báo' },
+    ]
+  },
+  {
+    label: 'CẤU HÌNH', items: [
+      { path: '/admin/periods', icon: ClipboardList, label: 'Kỳ xét duyệt' },
+      { path: '/admin/criteria', icon: Star, label: 'Tiêu chí' },
+      { path: '/admin/universities', icon: Building, label: 'Trường học' },
+    ]
+  },
+  {
+    label: 'BÁO CÁO', items: [
+      { path: '/admin/analytics', icon: PieChart, label: 'Thống kê nâng cao' },
+    ]
+  },
+];
+
+// Super Admin nav (đầy đủ nhất)
+const superAdminNav = [
+  {
+    label: 'QUẢN TRỊ', items: [
+      { path: '/dashboard', icon: LayoutDashboard, label: 'Tổng quan' },
+      { path: '/admin/applications', icon: FileText, label: 'Duyệt hồ sơ' },
+      { path: '/admin/users', icon: Users, label: 'Quản lý sinh viên' },
+      { path: '/admin/activities', icon: Calendar, label: 'Hoạt động' },
+      { path: '/admin/notifications', icon: BellRing, label: 'Gửi thông báo' },
+    ]
+  },
+  {
+    label: 'CẤU HÌNH', items: [
+      { path: '/admin/periods', icon: ClipboardList, label: 'Kỳ xét duyệt' },
+      { path: '/admin/criteria', icon: Star, label: 'Tiêu chí' },
+      { path: '/admin/universities', icon: Building, label: 'Trường học' },
+    ]
+  },
+  {
+    label: 'BÁO CÁO & HỆ THỐNG', items: [
+      { path: '/admin/analytics', icon: PieChart, label: 'Thống kê nâng cao' },
+      { path: '/admin/staff', icon: UserCog, label: 'Quản lý nhân viên' },
+      { path: '/admin/audit-logs', icon: ScrollText, label: 'Audit Log' },
     ]
   },
 ];
@@ -45,9 +85,18 @@ export default function Sidebar({ mobileOpen, onClose }) {
   const { user, logout } = useAuth();
   const location = useLocation();
 
-  const navSections = ['union_officer', 'province_admin', 'super_admin'].includes(user?.role)
-    ? adminNav
-    : studentNav;
+  // Phân quyền sidebar theo role
+  const SUPER_ROLES = ['super_admin', 'admin'];
+  const ALL_ADMIN_ROLES = ['union_officer', 'province_admin', 'super_admin', 'admin'];
+
+  let navSections;
+  if (SUPER_ROLES.includes(user?.role)) {
+    navSections = superAdminNav;
+  } else if (ALL_ADMIN_ROLES.includes(user?.role)) {
+    navSections = adminNav;
+  } else {
+    navSections = studentNav;
+  }
 
   const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
 
@@ -127,7 +176,9 @@ export default function Sidebar({ mobileOpen, onClose }) {
               <div className="sidebar-user-role">
                 {user?.role === 'student' ? 'Sinh viên' :
                   user?.role === 'union_officer' ? 'Cán bộ Hội' :
-                    user?.role === 'province_admin' ? 'Admin Tỉnh' : 'Super Admin'}
+                    user?.role === 'province_admin' ? 'Admin Tỉnh' :
+                      user?.role === 'admin' ? '⭐ Admin Hệ thống' :
+                        user?.role === 'super_admin' ? '🛡️ Super Admin' : user?.role}
               </div>
             </div>
             <button
