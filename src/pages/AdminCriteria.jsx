@@ -7,6 +7,11 @@ import { Plus, Edit2, Trash2, ChevronDown, ChevronRight } from 'lucide-react';
 const ICON_OPTIONS = ['🛡️', '📚', '💪', '❤️', '🌍', '🏆', '⭐', '🎯', '🔬', '🎨'];
 const COLOR_OPTIONS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#3b82f6', '#ec4899', '#14b8a6'];
 
+const getIcon = (icon) => {
+  const map = { Shield: '🛡️', BookOpen: '📚', Activity: '💪', Heart: '❤️', Globe: '🌍' };
+  return map[icon] || icon || '🎯';
+};
+
 function CategoryModal({ category, onClose, onSuccess }) {
   const [form, setForm] = useState({
     code: category?.code || '',
@@ -171,7 +176,7 @@ export default function AdminCriteria() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 background: `${cat.color}20`,
               }}>
-                {cat.icon || '🎯'}
+                {getIcon(cat.icon)}
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}>

@@ -166,13 +166,13 @@ export default function Sidebar({ mobileOpen, onClose }) {
               className="avatar"
               style={{ width: 36, height: 36, fontSize: 13 }}
             >
-              {user?.avatar_url
-                ? <img src={user.avatar_url} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+              {user?.avatarUrl || user?.avatar_url
+                ? <img src={user.avatarUrl || user.avatar_url} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
                 : initials
               }
             </div>
             <div style={{ flex: 1, overflow: 'hidden' }}>
-              <div className="sidebar-user-name">{user?.full_name || 'Người dùng'}</div>
+              <div className="sidebar-user-name">{user?.fullName || user?.full_name || 'Người dùng'}</div>
               <div className="sidebar-user-role">
                 {user?.role === 'student' ? 'Sinh viên' :
                   user?.role === 'union_officer' ? 'Cán bộ Hội' :

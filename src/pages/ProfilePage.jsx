@@ -32,17 +32,15 @@ export default function ProfilePage() {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('type', 'avatar');
 
     setLoading(true);
     const toastId = toast.loading('Đang tải ảnh lên...');
     try {
-      const res = await api.post('/evidences/upload', formData, {
+      const res = await api.post('/users/profile/avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      const fileUrl = res.data.evidence.fileUrl;
-      await api.put('/users/profile', { avatar_url: fileUrl });
-      updateUser({ avatarUrl: fileUrl });
+      const fileUrl = res.data.avatarUrl;
+      updateUser({ avatarUrl: fileUrl, avatar_url: fileUrl });
       toast.success('Cập nhật ảnh đại diện thành công!', { id: toastId });
     } catch (err) {
       toast.error('Lỗi khi tải ảnh lên.', { id: toastId });

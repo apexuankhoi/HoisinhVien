@@ -69,10 +69,12 @@ export default function Topbar({ onMenuClick }) {
             className="avatar"
             style={{ width: 28, height: 28, fontSize: 11 }}
           >
-            {user?.full_name?.split(' ').slice(-1)[0]?.[0] || 'U'}
+            {user?.avatarUrl || user?.avatar_url 
+              ? <img src={user.avatarUrl || user.avatar_url} style={{width:'100%', height:'100%', borderRadius:'50%', objectFit:'cover'}} alt="avatar"/>
+              : (user?.fullName || user?.full_name || 'U').split(' ').slice(-1)[0]?.[0] || 'U'}
           </div>
           <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-700)' }} className="hide-mobile">
-            {user?.full_name?.split(' ').slice(-2).join(' ')}
+            {(user?.fullName || user?.full_name || '').split(' ').slice(-2).join(' ')}
           </span>
         </div>
       </div>
