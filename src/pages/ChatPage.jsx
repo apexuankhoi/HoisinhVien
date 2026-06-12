@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, Sparkles } from 'lucide-react';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const SUGGESTIONS = [
   'Điều kiện đạt Sinh viên 5 tốt cấp tỉnh là gì?',
@@ -21,10 +23,11 @@ function MessageBubble({ msg }) {
           <Bot size={18} color="white" />
         </div>
       )}
-      <div
-        className={`bubble-content ${isUser ? 'user' : 'assistant'}`}
-        dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>') }}
-      />
+      <div className={`bubble-content ${isUser ? 'user' : 'assistant'}`}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {msg.content}
+        </ReactMarkdown>
+      </div>
     </div>
   );
 }
@@ -430,6 +433,45 @@ Bạn muốn hỏi gì hôm nay?`,
           border: 1px solid #e2e8f0;
           border-bottom-left-radius: 4px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        
+        .bubble-content p {
+          margin: 0 0 10px 0;
+        }
+        .bubble-content p:last-child {
+          margin-bottom: 0;
+        }
+        .bubble-content ul, .bubble-content ol {
+          margin: 8px 0;
+          padding-left: 24px;
+        }
+        .bubble-content li {
+          margin-bottom: 4px;
+        }
+        .bubble-content h1, .bubble-content h2, .bubble-content h3, .bubble-content h4 {
+          margin: 16px 0 8px 0;
+          font-weight: 700;
+          line-height: 1.3;
+          color: #0f172a;
+        }
+        .bubble-wrapper.user .bubble-content h1, 
+        .bubble-wrapper.user .bubble-content h2, 
+        .bubble-wrapper.user .bubble-content h3, 
+        .bubble-wrapper.user .bubble-content h4 {
+          color: white;
+        }
+        .bubble-content h3 {
+          font-size: 16px;
+        }
+        .bubble-content code {
+          background: rgba(0,0,0,0.05);
+          padding: 2px 4px;
+          border-radius: 4px;
+          font-family: monospace;
+          font-size: 0.9em;
+        }
+        .bubble-wrapper.user .bubble-content code {
+          background: rgba(255,255,255,0.2);
         }
 
         /* Loading */

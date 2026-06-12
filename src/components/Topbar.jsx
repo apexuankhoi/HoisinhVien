@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Bell, Menu, Search } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../lib/api';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
@@ -23,6 +23,7 @@ const pageTitles = {
 export default function Topbar({ onMenuClick }) {
   const { user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotif, setShowNotif] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -164,6 +165,7 @@ export default function Topbar({ onMenuClick }) {
             padding: '6px 12px', background: 'var(--gray-100)',
             borderRadius: 'var(--radius-full)', cursor: 'pointer'
           }}
+          onClick={() => navigate('/profile')}
         >
           <div
             className="avatar"

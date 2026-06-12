@@ -12,7 +12,6 @@ const studentNav = [
   {
     label: 'TỔNG QUAN', items: [
       { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-      { path: '/profile', icon: Star, label: 'Hồ sơ cá nhân' },
     ]
   },
   {
