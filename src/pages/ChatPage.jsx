@@ -48,10 +48,10 @@ export default function ChatPage() {
       content: `Xin chào! 👋 Tôi là **Trợ lý AI Hội Sinh Viên**.
 
 Tôi có thể giúp bạn:
-• 📋 Giải đáp mọi câu hỏi về tiêu chí **Sinh viên 5 tốt**
-• 🎯 Đánh giá tiến độ hồ sơ của bạn
-• 📅 Gợi ý hoạt động phù hợp để bổ sung điểm
-• 📎 Hướng dẫn nộp minh chứng
+- 📋 Giải đáp mọi câu hỏi về tiêu chí **Sinh viên 5 tốt**
+- 🎯 Đánh giá tiến độ hồ sơ của bạn
+- 📅 Gợi ý hoạt động phù hợp để bổ sung điểm
+- 📎 Hướng dẫn nộp minh chứng
 
 Bạn muốn hỏi gì hôm nay?`,
       created_at: new Date().toISOString()
@@ -569,11 +569,11 @@ Bạn muốn hỏi gì hôm nay?`,
         /* Responsive Design */
         @media (max-width: 768px) {
           .chat-page-root {
-            /* Fix layout for mobile safari / bottom navbars */
-            height: 100dvh;
-            /* Adjust if App Layout adds padding for topbar */
-            margin-top: calc(var(--header-height, 64px) * -1);
-            padding-top: var(--header-height, 64px);
+            /* Tràn viền để đè lên padding của .main-content */
+            margin: -16px;
+            margin-top: -16px;
+            height: calc(100vh - 64px);
+            background: white; /* Nền trắng cho mobile sạch sẽ */
           }
           .chat-wrapper {
             padding: 0;
@@ -588,54 +588,77 @@ Bạn muốn hỏi gì hôm nay?`,
             border-radius: 0;
             border: none;
             box-shadow: none;
+            background: #f8fafc; /* Nền chat hơi xám nhẹ */
           }
+          /* Ẩn header bị trùng lặp trên mobile */
           .chat-header {
-            padding: 12px 16px;
-            border-radius: 0;
+            display: none;
           }
           .chat-messages {
-            padding: 16px;
+            padding: 16px 12px;
             gap: 16px;
           }
           .bubble-wrapper {
-            max-width: 90%;
+            max-width: 92%;
           }
           .bubble-content {
             padding: 12px 16px;
-            font-size: 14px;
+            font-size: 14.5px;
+            border-radius: 18px;
           }
           
           .mobile-suggestions {
-            padding: 8px 0;
-            background: #f8fafc;
+            padding: 10px 0;
+            background: white;
             border-top: 1px solid #f1f5f9;
           }
           .mobile-suggestions-scroll {
             display: flex;
             gap: 8px;
-            padding: 0 16px;
+            padding: 0 12px;
             overflow-x: auto;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
           }
           .mobile-suggestions-scroll::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
+            display: none;
           }
           .mobile-suggestion-btn {
-            background: white;
+            background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 20px;
-            padding: 8px 14px;
-            font-size: 13px;
-            color: #475569;
+            padding: 8px 16px;
+            font-size: 13.5px;
+            color: #3b82f6;
+            font-weight: 500;
             white-space: nowrap;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: none;
           }
           
           .chat-input-container {
-            padding: 12px 16px;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-            border-top: none;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            padding: 10px 12px;
+            padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+            background: white;
+            border-top: 1px solid #f1f5f9;
+            box-shadow: none;
+          }
+          .input-wrapper {
+            background: #f1f5f9;
+            border-color: transparent;
+            padding: 4px 4px 4px 16px;
+            border-radius: 24px;
+          }
+          .input-wrapper:focus-within {
+            background: white;
+            border-color: #3b82f6;
+          }
+          .chat-textarea {
+            font-size: 15px;
+            padding: 8px 0;
+            max-height: 100px;
+          }
+          .send-btn {
+            width: 38px;
+            height: 38px;
           }
         }
       `}</style>
