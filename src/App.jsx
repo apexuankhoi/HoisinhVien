@@ -13,6 +13,7 @@ import ProfilePage from './pages/ProfilePage';
 import ChatPage from './pages/ChatPage';
 import EvidencesPage from './pages/EvidencesPage';
 import ActivitiesPage from './pages/ActivitiesPage';
+import AdminActivities from './pages/AdminActivities';
 import ApplicationPage from './pages/ApplicationPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import AdminPeriods from './pages/AdminPeriods';
@@ -94,7 +95,7 @@ function AppContent() {
             <ProtectedAdminRoute><AdminUsers /></ProtectedAdminRoute>
           } />
           <Route path="/admin/activities" element={
-            <ProtectedAdminRoute><ActivitiesPage /></ProtectedAdminRoute>
+            <ProtectedAdminRoute><AdminActivities /></ProtectedAdminRoute>
           } />
           <Route path="/admin/notifications" element={
             <ProtectedAdminRoute><AdminNotifications /></ProtectedAdminRoute>
