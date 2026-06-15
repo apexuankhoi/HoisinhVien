@@ -92,17 +92,26 @@ function UploadModal({ categories, onClose, onSuccess }) {
                 <p style={{ fontWeight: 700, color: 'var(--gray-700)', marginBottom: 8 }}>
                   {files.length} file được chọn:
                 </p>
-                {files.map(f => (
-                  <div key={f.name} className="file-preview" style={{ marginBottom: 6 }}>
-                    <div className="file-icon" style={{ width: 30, height: 30, fontSize: 14 }}>
-                      {f.type.startsWith('image/') ? '🖼️' : '📄'}
+                {files.map(f => {
+                  const isImage = f.type.startsWith('image/');
+                  return (
+                    <div key={f.name} className="file-preview" style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left' }}>
+                      {isImage ? (
+                        <div style={{ width: 60, height: 60, borderRadius: 8, overflow: 'hidden', flexShrink: 0, border: '1px solid var(--gray-200)' }}>
+                          <img src={URL.createObjectURL(f)} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      ) : (
+                        <div className="file-icon" style={{ width: 40, height: 40, fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, background: 'var(--gray-100)' }}>
+                          📄
+                        </div>
+                      )}
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 600, wordBreak: 'break-word' }}>{f.name}</div>
+                        <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>{(f.size / 1024).toFixed(1)} KB</div>
+                      </div>
                     </div>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600 }}>{f.name}</div>
-                      <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>{(f.size / 1024).toFixed(1)} KB</div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <>
