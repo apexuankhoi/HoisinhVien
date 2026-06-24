@@ -128,11 +128,108 @@ function AppContent() {
   );
 }
 
+// ─── Admin User Detail Modal ──────────────────────────────────
+function AdminUserDetailModal({ userId, onClose }) {
+  const [userData, setUserData] = useState(null);
+  const [apps, setApps] = useState([]);
+  const [evidences, setEvidences] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    import('./lib/api').then(({ default: api }) => {
+      Promise.all([
+        api.get(`/users/${userId}`),
+        api.get(`/applications?user_id=${userId}`),
+        api.get(`/evidences?user_id=${userId}`)
+      ]).then(([uRes, aRes, eRes]) => {
+        setUserData(uRes.data.user);
+        setApps(aRes.data.applications || []);
+        setEvidences(eRes.data.evidences || eRes.data || []);
+      }).catch(console.error).finally(() => setLoading(false));
+    });
+  }, [userId]);
+
+  if (loading) return <div className="modal-overlay"><div className="modal-box" style={{textAlign:'center', padding:40}}><div className="spinner" /></div></div>;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-box" style={{ maxWidth: 800, maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 800 }}>Chi tiết Người dùng</h2>
+          <button className="btn btn-ghost btn-sm" onClick={onClose}>Đóng</button>
+        </div>
+        
+        {/* User Info */}
+        <div style={{ marginBottom: 24, padding: 16, background: 'var(--bg-card)', borderRadius: 12, border: '1px solid var(--border-color)' }}>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 16 }}>
+            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--primary-light)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 'bold' }}>
+              {(userData?.fullName || userData?.full_name)?.charAt(0) || 'U'}
+            </div>
+            <div>
+              <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{userData?.fullName || userData?.full_name}</h3>
+              <div style={{ fontSize: 14, color: 'var(--gray-500)' }}>{userData?.email} • {userData?.phone || 'Chưa cập nhật SĐT'}</div>
+              <div style={{ fontSize: 13, marginTop: 4, display: 'inline-block', padding: '2px 8px', borderRadius: 12, background: 'var(--primary-light)', color: 'white' }}>
+                {userData?.role}
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, fontSize: 14 }}>
+            <div><b>Mã SV:</b> {userData?.studentId || userData?.student_id || '—'}</div>
+            <div><b>CCCD:</b> {userData?.cccd || '—'}</div>
+            <div><b>Trường:</b> {userData?.universityId?.name || userData?.university_id?.name || '—'}</div>
+            <div><b>Khoa:</b> {userData?.facultyId?.name || userData?.faculty_id?.name || '—'}</div>
+            <div><b>GPA:</b> {userData?.gpa || '—'}</div>
+            <div><b>Lớp:</b> {userData?.className || '—'}</div>
+          </div>
+        </div>
+
+        {/* Applications */}
+        <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>Hồ sơ đã nộp</h3>
+        {apps.length === 0 ? <p style={{ fontSize: 14, color: 'var(--gray-500)', marginBottom: 24 }}>Chưa có hồ sơ nào.</p> : (
+          <div style={{ marginBottom: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {apps.map(a => (
+              <div key={a.id} style={{ padding: 12, border: '1px solid var(--border-color)', borderRadius: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div style={{ fontWeight: 600 }}>Kỳ: {a.period_name}</div>
+                  <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>Điểm AI: {a.ai_score ? `${parseFloat(a.ai_score).toFixed(1)}/100` : '—'}</div>
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, padding: '4px 8px', borderRadius: 12, background: 'var(--bg-body)' }}>{a.status}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Evidences */}
+        <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>Minh chứng (AI & Upload)</h3>
+        {evidences.length === 0 ? <p style={{ fontSize: 14, color: 'var(--gray-500)' }}>Chưa có minh chứng nào.</p> : (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            {evidences.map(e => (
+              <div key={e.id} style={{ padding: 12, border: '1px solid var(--border-color)', borderRadius: 8 }}>
+                <div style={{ fontSize: 12, color: e.category_color, fontWeight: 600, marginBottom: 4 }}>{e.category_name}</div>
+                <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 4 }}>{e.title}</div>
+                <div style={{ fontSize: 12, color: 'var(--gray-500)', marginBottom: 8 }}>Tổ chức: {e.issuingOrganization || e.issuing_organization || '—'}</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: e.ai_status === 'valid' ? 'var(--success)' : (e.ai_status === 'invalid' ? 'var(--danger)' : 'var(--warning)') }}>
+                    AI: {e.ai_status}
+                  </div>
+                  {(e.fileUrl || e.file_url) && <a href={e.fileUrl || e.file_url} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: 'var(--primary)', textDecoration: 'none' }}>Xem File</a>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
+
 // ─── Admin Placeholder Pages ───────────────────────────────────
 function AdminApplications() {
   const [apps, setApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [reviewing, setReviewing] = useState(null);
+  const [viewingUser, setViewingUser] = useState(null);
   const [reviewForm, setReviewForm] = useState({ status: '', notes: '' });
 
   useEffect(() => {
@@ -207,13 +304,22 @@ function AdminApplications() {
                     {app.submitted_at ? new Date(app.submitted_at).toLocaleDateString('vi-VN') : '—'}
                   </td>
                   <td>
-                    <button
-                      className="btn btn-primary btn-sm"
-                      onClick={() => setReviewing(app)}
-                      disabled={app.status === 'draft'}
-                    >
-                      Xét duyệt
-                    </button>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => setReviewing(app)}
+                        disabled={app.status === 'draft'}
+                      >
+                        Xét duyệt
+                      </button>
+                      <button
+                        className="btn btn-ghost btn-sm"
+                        style={{ border: '1px solid var(--border-color)' }}
+                        onClick={() => setViewingUser(app.user_id)}
+                      >
+                        Xem chi tiết
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -266,6 +372,7 @@ function AdminApplications() {
           </div>
         </div>
       )}
+      {viewingUser && <AdminUserDetailModal userId={viewingUser} onClose={() => setViewingUser(null)} />}
     </div>
   );
 }
@@ -274,6 +381,7 @@ function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [viewingUser, setViewingUser] = useState(null);
   const { user: currentUser } = useAuth();
 
   const loadUsers = (q = '') => {
@@ -370,13 +478,22 @@ function AdminUsers() {
                     </td>
                     {canToggleStatus && (
                       <td>
-                        <button
-                          className={`btn btn-sm ${isActive ? 'btn-ghost' : 'btn-primary'}`}
-                          style={{ fontSize: 12 }}
-                          onClick={() => handleToggleStatus(uid, isActive)}
-                        >
-                          {isActive ? 'Khóa' : 'Kích hoạt'}
-                        </button>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button
+                            className="btn btn-sm btn-ghost"
+                            style={{ fontSize: 12, border: '1px solid var(--border-color)' }}
+                            onClick={() => setViewingUser(uid)}
+                          >
+                            Xem chi tiết
+                          </button>
+                          <button
+                            className={`btn btn-sm ${isActive ? 'btn-ghost' : 'btn-primary'}`}
+                            style={{ fontSize: 12 }}
+                            onClick={() => handleToggleStatus(uid, isActive)}
+                          >
+                            {isActive ? 'Khóa' : 'Kích hoạt'}
+                          </button>
+                        </div>
                       </td>
                     )}
                   </tr>
@@ -386,6 +503,7 @@ function AdminUsers() {
           </table>
         </div>
       </div>
+      {viewingUser && <AdminUserDetailModal userId={viewingUser} onClose={() => setViewingUser(null)} />}
     </div>
   );
 }
@@ -397,6 +515,7 @@ function AdminStaff() {
   const [showCreate, setShowCreate] = useState(false);
   const [createForm, setCreateForm] = useState({ full_name: '', email: '', password: '', role: 'union_officer', phone: '' });
   const [creating, setCreating] = useState(false);
+  const [viewingUser, setViewingUser] = useState(null);
 
   const ROLE_LABELS = {
     student: 'Sinh viên',
@@ -521,13 +640,22 @@ function AdminStaff() {
                     </span>
                   </td>
                   <td>
-                    <button
-                      className={`btn btn-sm ${s.isActive ? 'btn-ghost' : 'btn-primary'}`}
-                      style={{ fontSize: 12 }}
-                      onClick={() => handleToggleStatus(s._id, s.isActive)}
-                    >
-                      {s.isActive ? 'Khóa' : 'Kích hoạt'}
-                    </button>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button
+                        className="btn btn-sm btn-ghost"
+                        style={{ fontSize: 12, border: '1px solid var(--border-color)' }}
+                        onClick={() => setViewingUser(s._id || s.id)}
+                      >
+                        Xem chi tiết
+                      </button>
+                      <button
+                        className={`btn btn-sm ${s.isActive ? 'btn-ghost' : 'btn-primary'}`}
+                        style={{ fontSize: 12 }}
+                        onClick={() => handleToggleStatus(s._id || s.id, s.isActive)}
+                      >
+                        {s.isActive ? 'Khóa' : 'Kích hoạt'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -571,6 +699,7 @@ function AdminStaff() {
                 <option value="union_officer">Cán bộ Hội</option>
                 <option value="province_admin">Admin Tỉnh</option>
                 <option value="admin">Admin Hệ thống</option>
+                <option value="super_admin">Super Admin</option>
               </select>
             </div>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 8 }}>
@@ -582,6 +711,7 @@ function AdminStaff() {
           </div>
         </div>
       )}
+      {viewingUser && <AdminUserDetailModal userId={viewingUser} onClose={() => setViewingUser(null)} />}
     </div>
   );
 }
