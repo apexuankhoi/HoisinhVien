@@ -215,7 +215,12 @@ function AdminUserDetailModal({ userId, onClose }) {
                   {(e.fileUrl || e.file_url) && <a href={e.fileUrl || e.file_url} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: 'var(--primary)', textDecoration: 'none' }}>Xem File</a>}
                 </div>
                 {e.ai_notes && (
-                  <div style={{ marginTop: 8, padding: 8, background: '#fef2f2', borderRadius: 6, fontSize: 12, color: '#dc2626', border: '1px solid #fecaca' }}>
+                  <div style={{
+                    marginTop: 8, padding: 8, borderRadius: 6, fontSize: 12,
+                    background: e.ai_status === 'valid' ? '#f0fdf4' : (e.ai_status === 'invalid' ? '#fef2f2' : '#fffbeb'),
+                    color: e.ai_status === 'valid' ? '#16a34a' : (e.ai_status === 'invalid' ? '#dc2626' : '#d97706'),
+                    border: `1px solid ${e.ai_status === 'valid' ? '#bbf7d0' : (e.ai_status === 'invalid' ? '#fecaca' : '#fde68a')}`
+                  }}>
                     <b>Lý do AI:</b> {e.ai_notes}
                   </div>
                 )}
