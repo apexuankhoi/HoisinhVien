@@ -210,10 +210,15 @@ function AdminUserDetailModal({ userId, onClose }) {
                 <div style={{ fontSize: 12, color: 'var(--gray-500)', marginBottom: 8 }}>Tổ chức: {e.issuingOrganization || e.issuing_organization || '—'}</div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ fontSize: 11, fontWeight: 600, color: e.ai_status === 'valid' ? 'var(--success)' : (e.ai_status === 'invalid' ? 'var(--danger)' : 'var(--warning)') }}>
-                    AI: {e.ai_status}
+                    AI: {e.ai_status === 'valid' ? 'Hợp lệ' : (e.ai_status === 'invalid' ? 'Không hợp lệ' : 'Cần xem xét')}
                   </div>
                   {(e.fileUrl || e.file_url) && <a href={e.fileUrl || e.file_url} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: 'var(--primary)', textDecoration: 'none' }}>Xem File</a>}
                 </div>
+                {e.ai_notes && (
+                  <div style={{ marginTop: 8, padding: 8, background: '#fef2f2', borderRadius: 6, fontSize: 12, color: '#dc2626', border: '1px solid #fecaca' }}>
+                    <b>Lý do AI:</b> {e.ai_notes}
+                  </div>
+                )}
               </div>
             ))}
           </div>
