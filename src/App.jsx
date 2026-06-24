@@ -130,10 +130,16 @@ function AppContent() {
 
 // ─── Admin User Detail Modal ──────────────────────────────────
 function AdminUserDetailModal({ userId, onClose }) {
+  const { user: currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
   const [apps, setApps] = useState([]);
   const [evidences, setEvidences] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Edit states
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({});
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     import('./lib/api').then(({ default: api }) => {
@@ -149,38 +155,113 @@ function AdminUserDetailModal({ userId, onClose }) {
     });
   }, [userId]);
 
+  const handleEditClick = () => {
+    setEditForm({
+      full_name: userData?.fullName || userData?.full_name || '',
+      email: userData?.email || '',
+      phone: userData?.phone || '',
+      student_id: userData?.studentId || userData?.student_id || '',
+      class_name: userData?.className || '',
+      gpa: userData?.gpa || '',
+      password: '',
+    });
+    setIsEditing(true);
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const { default: api } = await import('./lib/api');
+      const { default: toast } = await import('react-hot-toast');
+      const res = await api.patch(`/users/${userId}`, editForm);
+      toast.success('Cập nhật thành công');
+      setUserData(res.data.user);
+      setIsEditing(false);
+    } catch (err) {
+      import('react-hot-toast').then(({ default: toast }) => toast.error(err.response?.data?.error || 'Lỗi cập nhật'));
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) return <div className="modal-overlay"><div className="modal-box" style={{textAlign:'center', padding:40}}><div className="spinner" /></div></div>;
+
+  const canEdit = currentUser?.role === 'super_admin' || currentUser?.role === 'admin';
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" style={{ maxWidth: 800, maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
           <h2 style={{ fontSize: 20, fontWeight: 800 }}>Chi tiết Người dùng</h2>
-          <button className="btn btn-ghost btn-sm" onClick={onClose}>Đóng</button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {canEdit && !isEditing && <button className="btn btn-outline btn-sm" onClick={handleEditClick}>Sửa thông tin</button>}
+            <button className="btn btn-ghost btn-sm" onClick={onClose}>Đóng</button>
+          </div>
         </div>
         
         {/* User Info */}
         <div style={{ marginBottom: 24, padding: 16, background: 'var(--bg-card)', borderRadius: 12, border: '1px solid var(--border-color)' }}>
-          <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 16 }}>
-            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--primary-light)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 'bold' }}>
-              {(userData?.fullName || userData?.full_name)?.charAt(0) || 'U'}
-            </div>
+          {isEditing ? (
             <div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{userData?.fullName || userData?.full_name}</h3>
-              <div style={{ fontSize: 14, color: 'var(--gray-500)' }}>{userData?.email} • {userData?.phone || 'Chưa cập nhật SĐT'}</div>
-              <div style={{ fontSize: 13, marginTop: 4, display: 'inline-block', padding: '2px 8px', borderRadius: 12, background: 'var(--primary-light)', color: 'white' }}>
-                {userData?.role}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+                <div>
+                  <label className="form-label">Họ Tên</label>
+                  <input className="form-input" value={editForm.full_name} onChange={e => setEditForm({...editForm, full_name: e.target.value})} />
+                </div>
+                <div>
+                  <label className="form-label">Email</label>
+                  <input className="form-input" value={editForm.email} onChange={e => setEditForm({...editForm, email: e.target.value})} />
+                </div>
+                <div>
+                  <label className="form-label">Số điện thoại</label>
+                  <input className="form-input" value={editForm.phone} onChange={e => setEditForm({...editForm, phone: e.target.value})} />
+                </div>
+                <div>
+                  <label className="form-label">Mã SV</label>
+                  <input className="form-input" value={editForm.student_id} onChange={e => setEditForm({...editForm, student_id: e.target.value})} />
+                </div>
+                <div>
+                  <label className="form-label">Lớp</label>
+                  <input className="form-input" value={editForm.class_name} onChange={e => setEditForm({...editForm, class_name: e.target.value})} />
+                </div>
+                <div>
+                  <label className="form-label">GPA</label>
+                  <input className="form-input" type="number" step="0.01" value={editForm.gpa} onChange={e => setEditForm({...editForm, gpa: e.target.value})} />
+                </div>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label className="form-label">Mật khẩu mới (Bỏ trống nếu không đổi)</label>
+                  <input className="form-input" type="password" placeholder="Nhập mật khẩu mới..." value={editForm.password} onChange={e => setEditForm({...editForm, password: e.target.value})} />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+                <button className="btn btn-ghost btn-sm" onClick={() => setIsEditing(false)}>Hủy</button>
+                <button className="btn btn-primary btn-sm" onClick={handleSave} disabled={saving}>{saving ? 'Đang lưu...' : 'Lưu thay đổi'}</button>
               </div>
             </div>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, fontSize: 14 }}>
-            <div><b>Mã SV:</b> {userData?.studentId || userData?.student_id || '—'}</div>
-            <div><b>CCCD:</b> {userData?.cccd || '—'}</div>
-            <div><b>Trường:</b> {userData?.universityId?.name || userData?.university_id?.name || '—'}</div>
-            <div><b>Khoa:</b> {userData?.facultyId?.name || userData?.faculty_id?.name || '—'}</div>
-            <div><b>GPA:</b> {userData?.gpa || '—'}</div>
-            <div><b>Lớp:</b> {userData?.className || '—'}</div>
-          </div>
+          ) : (
+            <>
+              <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 16 }}>
+                <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--primary-light)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 'bold' }}>
+                  {(userData?.fullName || userData?.full_name)?.charAt(0) || 'U'}
+                </div>
+                <div>
+                  <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{userData?.fullName || userData?.full_name}</h3>
+                  <div style={{ fontSize: 14, color: 'var(--gray-500)' }}>{userData?.email} • {userData?.phone || 'Chưa cập nhật SĐT'}</div>
+                  <div style={{ fontSize: 13, marginTop: 4, display: 'inline-block', padding: '2px 8px', borderRadius: 12, background: 'var(--primary-light)', color: 'white' }}>
+                    {userData?.role}
+                  </div>
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, fontSize: 14 }}>
+                <div><b>Mã SV:</b> {userData?.studentId || userData?.student_id || '—'}</div>
+                <div><b>CCCD:</b> {userData?.cccd || '—'}</div>
+                <div><b>Trường:</b> {userData?.universityId?.name || userData?.university_id?.name || '—'}</div>
+                <div><b>Khoa:</b> {userData?.facultyId?.name || userData?.faculty_id?.name || '—'}</div>
+                <div><b>GPA:</b> {userData?.gpa || '—'}</div>
+                <div><b>Lớp:</b> {userData?.className || '—'}</div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Applications */}
@@ -423,6 +504,23 @@ function AdminUsers() {
     }
   };
 
+  const handleDelete = async (userId) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa sinh viên này? Thao tác này không thể hoàn tác!')) return;
+    const { default: api } = await import('./lib/api');
+    const { default: toast } = await import('react-hot-toast');
+    if (!['super_admin', 'admin'].includes(currentUser?.role)) {
+      toast.error('Chỉ Super Admin / Admin mới có quyền xóa tài khoản');
+      return;
+    }
+    try {
+      await api.delete(`/users/${userId}`);
+      toast.success('Đã xóa sinh viên');
+      setUsers(prev => prev.filter(u => u._id !== userId && u.id !== userId));
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Không thể xóa');
+    }
+  };
+
   const canToggleStatus = ['province_admin', 'super_admin', 'admin'].includes(currentUser?.role);
 
   if (loading) return <div className="page-loading"><div className="spinner" /></div>;
@@ -486,7 +584,7 @@ function AdminUsers() {
                         {isActive ? 'Hoạt động' : 'Bị khóa'}
                       </span>
                     </td>
-                    {canToggleStatus && (
+                      {canToggleStatus && (
                       <td>
                         <div style={{ display: 'flex', gap: 8 }}>
                           <button
@@ -503,6 +601,15 @@ function AdminUsers() {
                           >
                             {isActive ? 'Khóa' : 'Kích hoạt'}
                           </button>
+                          {['super_admin', 'admin'].includes(currentUser?.role) && (
+                            <button
+                              className="btn btn-sm"
+                              style={{ fontSize: 12, background: '#fee2e2', color: '#dc2626', border: 'none' }}
+                              onClick={() => handleDelete(uid)}
+                            >
+                              Xóa
+                            </button>
+                          )}
                         </div>
                       </td>
                     )}
@@ -598,6 +705,19 @@ function AdminStaff() {
     }
   };
 
+  const handleDelete = async (userId) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa vĩnh viễn nhân viên này? Thao tác này không thể hoàn tác!')) return;
+    const { default: api } = await import('./lib/api');
+    const { default: toast } = await import('react-hot-toast');
+    try {
+      await api.delete(`/users/${userId}`);
+      toast.success('Đã xóa nhân viên');
+      setStaff(prev => prev.filter(s => s._id !== userId && s.id !== userId));
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Không thể xóa');
+    }
+  };
+
   if (loading) return <div className="page-loading"><div className="spinner" /></div>;
 
   return (
@@ -664,6 +784,13 @@ function AdminStaff() {
                         onClick={() => handleToggleStatus(s._id || s.id, s.isActive)}
                       >
                         {s.isActive ? 'Khóa' : 'Kích hoạt'}
+                      </button>
+                      <button
+                        className="btn btn-sm"
+                        style={{ fontSize: 12, background: '#fee2e2', color: '#dc2626', border: 'none' }}
+                        onClick={() => handleDelete(s._id || s.id)}
+                      >
+                        Xóa
                       </button>
                     </div>
                   </td>
