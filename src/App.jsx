@@ -94,6 +94,9 @@ function AppContent() {
           <Route path="/admin/users" element={
             <ProtectedAdminRoute><AdminUsers /></ProtectedAdminRoute>
           } />
+          <Route path="/admin/uncertain-evidences" element={
+            <ProtectedAdminRoute><AdminUncertainEvidences /></ProtectedAdminRoute>
+          } />
           <Route path="/admin/activities" element={
             <ProtectedAdminRoute><AdminActivities /></ProtectedAdminRoute>
           } />
@@ -464,6 +467,92 @@ function AdminApplications() {
         </div>
       )}
       {viewingUser && <AdminUserDetailModal userId={viewingUser} onClose={() => setViewingUser(null)} />}
+    </div>
+  );
+}
+
+// ─── Admin Uncertain Evidences ──────────────────────────────────
+function AdminUncertainEvidences() {
+  const [evidences, setEvidences] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadEvidences = () => {
+    setLoading(true);
+    import('./lib/api').then(({ default: api }) => {
+      api.get('/evidences?user_id=all&ai_status=uncertain')
+        .then(r => setEvidences(r.data.evidences || []))
+        .finally(() => setLoading(false));
+    });
+  };
+
+  useEffect(() => { loadEvidences(); }, []);
+
+  const handleReview = async (evidenceId, status) => {
+    const { default: api } = await import('./lib/api');
+    const { default: toast } = await import('react-hot-toast');
+    try {
+      await api.patch(`/evidences/${evidenceId}/review`, { admin_status: status });
+      toast.success('Đã cập nhật trạng thái');
+      setEvidences(prev => prev.filter(e => e.id !== evidenceId));
+    } catch (err) {
+      toast.error('Không thể cập nhật');
+    }
+  };
+
+  if (loading) return <div className="page-loading"><div className="spinner" /></div>;
+
+  return (
+    <div className="page-container">
+      <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 24 }}>Duyệt minh chứng AI (Cần xem xét)</h2>
+      <div className="card" style={{ padding: 0 }}>
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Sinh viên</th>
+                <th>Minh chứng</th>
+                <th>Chi tiết</th>
+                <th>File</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              {evidences.length === 0 ? (
+                <tr><td colSpan={5} style={{ textAlign: 'center', padding: 40, color: 'var(--gray-400)' }}>Không có minh chứng nào cần xét duyệt tay.</td></tr>
+              ) : evidences.map(e => (
+                <tr key={e.id}>
+                  <td>
+                    <div style={{ fontWeight: 600 }}>{e.user_name}</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>{e.student_id}</div>
+                  </td>
+                  <td>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>{e.title}</div>
+                    <div style={{ fontSize: 12, color: e.category_color, marginTop: 4 }}>{e.category_name}</div>
+                  </td>
+                  <td>
+                    <div style={{ fontSize: 12, color: '#d97706', background: '#fffbeb', padding: '4px 8px', borderRadius: 4, display: 'inline-block' }}>
+                      <b>Lý do AI:</b> {e.ai_notes || '—'}
+                    </div>
+                  </td>
+                  <td>
+                    {e.file_url ? <a href={e.file_url} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'var(--primary)', textDecoration: 'none' }}>Xem File</a> : '—'}
+                  </td>
+                  <td>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button className="btn btn-sm" style={{ background: '#ecfdf5', color: '#059669', border: '1px solid #10b981', fontSize: 12 }} onClick={() => handleReview(e.id, 'approved')}>
+                        Duyệt
+                      </button>
+                      <button className="btn btn-sm" style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #ef4444', fontSize: 12 }} onClick={() => handleReview(e.id, 'rejected')}>
+                        Từ chối
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

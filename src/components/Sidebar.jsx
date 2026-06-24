@@ -4,7 +4,7 @@ import {
   LayoutDashboard, FileText, Upload, Calendar, MessageSquare,
   Trophy, Bell, Settings, LogOut, Users, BarChart2,
   BookOpen, Star, Menu, X, ShieldCheck, UserCog,
-  Building, ClipboardList, PieChart, ScrollText, BellRing
+  Building, ClipboardList, PieChart, ScrollText, BellRing, FileWarning
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -35,6 +35,7 @@ const adminNav = [
       { path: '/dashboard', icon: LayoutDashboard, label: 'Tổng quan' },
       { path: '/admin/applications', icon: FileText, label: 'Duyệt hồ sơ' },
       { path: '/admin/users', icon: Users, label: 'Quản lý sinh viên' },
+      { path: '/admin/uncertain-evidences', icon: FileWarning, label: 'Duyệt minh chứng AI' },
       { path: '/admin/activities', icon: Calendar, label: 'Hoạt động' },
       { path: '/admin/notifications', icon: BellRing, label: 'Gửi thông báo' },
     ]
@@ -60,6 +61,7 @@ const superAdminNav = [
       { path: '/dashboard', icon: LayoutDashboard, label: 'Tổng quan' },
       { path: '/admin/applications', icon: FileText, label: 'Duyệt hồ sơ' },
       { path: '/admin/users', icon: Users, label: 'Quản lý sinh viên' },
+      { path: '/admin/uncertain-evidences', icon: FileWarning, label: 'Duyệt minh chứng AI' },
       { path: '/admin/activities', icon: Calendar, label: 'Hoạt động' },
       { path: '/admin/notifications', icon: BellRing, label: 'Gửi thông báo' },
     ]
